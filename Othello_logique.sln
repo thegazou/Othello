@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Othello_logique", "Othello_logique\Othello_logique.csproj", "{ED2F08D8-522E-4D7A-94AD-BF433EA9681D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED2F08D8-522E-4D7A-94AD-BF433EA9681D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED2F08D8-522E-4D7A-94AD-BF433EA9681D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED2F08D8-522E-4D7A-94AD-BF433EA9681D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED2F08D8-522E-4D7A-94AD-BF433EA9681D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
