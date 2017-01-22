@@ -7,8 +7,9 @@ namespace Othello_logique
     {
         static void Main(string[] args)
         {
-            bool debugFlag = true;
+            bool debugFlag = false;
             Engine engine = new Engine();
+            testTcp();
 
             if (debugFlag)
             {
@@ -21,7 +22,7 @@ namespace Othello_logique
                 engine.SaveGame();
                 engine.LoadGame();
                 engine.board.Print();
-                engine.playMove(3, 2, false);
+                engine.playMove(3, 2, Engine.BLACK);
                 Console.WriteLine("{0} turn", engine.Player);
                 engine.board.Print();
                 engine.SaveGame();
@@ -33,6 +34,34 @@ namespace Othello_logique
                 engine.board.Print();
                 Console.ReadKey();
             }
+        }
+        static void testTcp()
+        {
+            int isServer;
+            int port = 8001;
+            string ip = "169.254.84.22";
+            Engine engine = new Engine();
+            engine.NewGame();
+            Console.Write("Are you a server? [y/*]");
+            isServer = Console.Read();
+            if (isServer == 121)
+            {
+                engine.NewOnlineGame(ip, port, Engine.BLACK);
+                engine.playMove(3, 2, Engine.BLACK);
+                Console.WriteLine("{0} turn", engine.Player);
+                engine.board.Print();
+            }
+            else
+            {
+                engine.NewOnlineGame(ip, port, Engine.WHITE);
+                Console.WriteLine("{0} turn", engine.Player);
+                engine.board.Print();
+                engine.playMove(2, 4, Engine.WHITE);
+                Console.WriteLine("{0} turn", engine.Player);
+                engine.board.Print();
+            }
+            Console.ReadKey();
+
         }
     }
 }

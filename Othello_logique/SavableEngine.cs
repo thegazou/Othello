@@ -13,6 +13,5 @@ namespace Othello_logique
         public int[] Board { get; set; }
         public int[][] BoardHistory { get; set; }
         public int[] PlayerHistory { get; set; }
-
     }
 }

@@ -23,7 +23,7 @@ namespace Othello_logique
         //private fields
         private delegate Tuple<int, int> GetNextMove(int[,] game, int player);
         private GetNextMove[] strategies = { IA.Strategie1, IA.Strategie2 };
-        private int player = BLACK;
+        private int currentPlayer = BLACK;
         private Stopwatch blackTimer = new Stopwatch();
         private Stopwatch whiteTimer = new Stopwatch();
         private Stack<int[,]> boardHistory = new Stack<int[,]>();
@@ -31,13 +31,36 @@ namespace Othello_logique
         private Decimal blackOffsetTime = 0;//Used if a game is loaded from a save.
         private Decimal whiteOffsetTime = 0;//Used if a game is loaded from a save.
         private bool isSavingInProgress = false;
+        private bool isOnline = false;
+        private string opponentIp;
+        private int opponengPort;
+        private bool isOpponentTurn;
 
         //properties
-        public int Player
+        public bool IsOpponentTurn
         {
-            get { return player; }
+            get { return isOpponentTurn; }
             private set { }
         }
+
+        /// <summary>
+        /// Get starting color of the player. Useful when playing online.
+        /// </summary>
+        public int Player
+        {
+            get { return Player; }
+            private set { }
+        }
+
+        /// <summary>
+        /// Get the color of the current player.
+        /// </summary>
+        public int CurrentPlayer
+        {
+            get { return currentPlayer; }
+            private set { }
+        }
+
         /// <summary>
         /// Get the playing time of the black player rounded to one decimal.
         /// </summary>
@@ -67,13 +90,38 @@ namespace Othello_logique
         /// <summary>
         /// Start a new game.
         /// </summary>
-        public void NewGame()
+        public void NewGame(int player = BLACK)
         {
-            player = BLACK;
+            this.Player = player;
+            currentPlayer = player;
             board = Board.StartingBoard();
             blackTimer.Reset();
             whiteTimer.Reset();
             blackTimer.Start();
+
+            // Happends if starting online game as second player
+            if (player == WHITE)
+            {
+                currentPlayer = -player;
+                isOpponentTurn = true;
+                int[] move = Network.GetInput();
+                playMove(move[0], move[1], currentPlayer);
+            }
+
+        }
+
+        /// <summary>
+        /// Start a new game with a player at the given IpAdress and port number.
+        /// </summary>
+        /// <param name="opponentIp"></param>
+        /// <param name="opponentIp"></param>
+        /// <param name="player"></param>
+        public void NewOnlineGame(string opponentIp, int opponentPort, int player)
+        {
+            isOnline = true;
+            this.opponentIp = opponentIp;
+            this.opponengPort = opponentPort;
+            NewGame(player);
         }
 
         /// <summary>
@@ -81,7 +129,7 @@ namespace Othello_logique
         /// </summary>
         public void PauseGame()
         {
-            if (player == WHITE)
+            if (currentPlayer == WHITE)
                 whiteTimer.Stop();
             else
                 blackTimer.Stop();
@@ -92,14 +140,14 @@ namespace Othello_logique
         /// </summary>
         public void ResumeGame()
         {
-            if (player == WHITE)
+            if (currentPlayer == WHITE)
                 whiteTimer.Start();
             else
                 blackTimer.Start();
         }
 
         /// <summary>
-        /// Set the player and the board as it was before the last move.
+        /// Set the current player and the board as it was before the last move.
         /// </summary>
         /// <returns>Returns true if the action is possible and false otherwise.</returns>
         public bool Undo()
@@ -107,7 +155,7 @@ namespace Othello_logique
             if (boardHistory.Any())
             {
                 board.SetBoard(boardHistory.Pop());
-                player = playerHistory.Pop();
+                currentPlayer = playerHistory.Pop();
                 return true;
             }
             else
@@ -128,7 +176,7 @@ namespace Othello_logique
                 SavableEngine engineState = new SavableEngine();
                 engineState.BlackTimer = this.BlackTimer;
                 engineState.WhiteTimer = this.WhiteTimer;
-                engineState.Player = this.Player;
+                engineState.Player = this.CurrentPlayer;
                 engineState.Board = Engine.Convert2DTo1DBoardArray(this.board.GetBoardCopy());
 
                 int historySize = playerHistory.Count;
@@ -156,7 +204,8 @@ namespace Othello_logique
             Deserialize(fileName, out sourceEngine);
             this.whiteOffsetTime = sourceEngine.WhiteTimer;
             this.blackOffsetTime = sourceEngine.BlackTimer;
-            this.player = sourceEngine.Player;
+            this.currentPlayer = sourceEngine.Player;
+            this.Player = sourceEngine.Player;
 
             this.board.SetBoard(Engine.Convert1DTo2DBoardArray(sourceEngine.Board));
             this.playerHistory = new Stack<int>(sourceEngine.PlayerHistory);
@@ -165,6 +214,35 @@ namespace Othello_logique
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
         }
 
+        /// <summary>
+        /// Will update the board status with the given move and switch players
+        /// </summary>
+        /// <param name="column">value between 0 and 7</param>
+        /// <param name="line">value between 0 and 7</param>
+        /// <param name="player"></param>
+        public void playMove(int column, int line, int player)
+        {
+            Tuple<int, int> index = new Tuple<int, int>(column, line);
+            SaveState();
+            board.PlayMove(index, player);
+            if (isOnline && isOpponentTurn == false)
+                Network.SendInput(column, line, opponentIp, opponengPort);
+            nextTurn();
+        }
+
+        /// <summary>
+        /// Returns true if the move is valid for specified player.
+        /// </summary>
+        /// <param name="column">value between 0 and 7</param>
+        /// <param name="line">value between 0 and 7</param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public bool isPlayable(int column, int line, int player)
+        {
+            Tuple<int, int> index = new Tuple<int, int>(column, line);
+            return board.CanMove(index, player);
+
+        }
         /*############################################################################
         ##               Functions from IPlayble                                    ##
         ############################################################################*/
@@ -259,10 +337,10 @@ namespace Othello_logique
         private void nextTurn()
         {
             if (board.GameOver() == false)
-                player = EMPTY;
+                currentPlayer = EMPTY;
             else
             {
-                if (player == BLACK)
+                if (currentPlayer == BLACK)
                 {
                     blackTimer.Stop();
                     whiteTimer.Start();
@@ -272,9 +350,15 @@ namespace Othello_logique
                     whiteTimer.Stop();
                     blackTimer.Start();
                 }
-                player = -player;
-                if (board.CanPlay(player) == false)
+                currentPlayer = -currentPlayer;
+                isOpponentTurn = !isOpponentTurn;
+                if (board.CanPlay(currentPlayer) == false)
                     nextTurn();
+                if (isOnline && isOpponentTurn)
+                {
+                    int[] move = Network.GetInput();
+                    playMove(move[0], move[1], currentPlayer);
+                }
             }
         }
 
@@ -284,7 +368,7 @@ namespace Othello_logique
         private void SaveState()
         {
             boardHistory.Push(board.GetBoardCopy());
-            playerHistory.Push(player);
+            playerHistory.Push(currentPlayer);
         }
 
         /// <summary>
