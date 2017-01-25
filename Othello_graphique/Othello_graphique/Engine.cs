@@ -38,7 +38,7 @@ namespace Othello_logique
         //private fields
         private delegate Tuple<int, int> GetNextMove(int[,] game, int player);
         private GetNextMove[] strategies = { IA.Strategie1, IA.Strategie2 };
-        private int currentPlayer = BLACK;
+        private int currentPlayer;
         private Stopwatch blackTimer = new Stopwatch();
         private Stopwatch whiteTimer = new Stopwatch();
         private Stack<int[,]> boardHistory = new Stack<int[,]>();
@@ -52,13 +52,27 @@ namespace Othello_logique
         private bool isOpponentTurn;
         private int whiteScore;
         private int blackScore;
-        
+        private int startingPlayer;
+        private System.Windows.Threading.DispatcherTimer dt = new System.Windows.Threading.DispatcherTimer();
 
         //properties
+
+        /// <summary>
+        /// Tells if it's the opponnent's turn.
+        /// </summary>
         public bool IsOpponentTurn
         {
             get { return isOpponentTurn; }
-            private set { }
+            private set { isOpponentTurn = value; }
+        }
+
+        /// <summary>
+        /// Tells if the game is on pause.
+        /// </summary>
+        public bool IsOnPause
+        {
+            get { return IsOnPause; }
+            private set { IsOnPause = value; }
         }
 
         /// <summary>
@@ -66,8 +80,8 @@ namespace Othello_logique
         /// </summary>
         public int Player
         {
-            get { return Player; }
-            private set { }
+            get { return startingPlayer; }
+            private set { startingPlayer = value; }
         }
 
         /// <summary>
@@ -76,18 +90,18 @@ namespace Othello_logique
         public int CurrentPlayer
         {
             get { return currentPlayer; }
-            private set { }
+            private set { currentPlayer = value; }
         }
 
         public String CurrPlayBind
         {
             get
             {
-                if(currentPlayer == 1)
+                if (CurrentPlayer == 1)
                 {
                     return "Black";
                 }
-                if(currentPlayer == -1)
+                if (CurrentPlayer == -1)
                 {
                     return "White";
                 }
@@ -96,34 +110,36 @@ namespace Othello_logique
             private set { }
         }
 
+
         public int WhiteScore
         {
             get { return whiteScore; }
-            private set { }
+            private set { whiteScore = value; }
         }
 
         public int BlackScore
         {
             get { return blackScore; }
-            private set { }
+            private set { blackScore = value; }
         }
 
         /// <summary>
-        /// Get the playing time of the black player rounded to one decimal.
+        /// Get the playing time of the black player in second rounded to one decimal.
         /// </summary>
         public Decimal BlackTimer
         {
-            get { return decimal.Round((Convert.ToDecimal(blackTimer.ElapsedMilliseconds) + blackOffsetTime)/1000, 1); }
-            private set { }
-            
+            get { return decimal.Round((Convert.ToDecimal(blackTimer.ElapsedMilliseconds) + blackOffsetTime) / 1000, 1); }
+            private set { FirePropertyChanged("BlackTimer"); }
+
         }
+
         /// <summary>
-        /// Get the playing time of the white player rounded to one decimal.
+        /// Get the playing time of the white player in second rounded to one decimal.
         /// </summary>
         public Decimal WhiteTimer
         {
             get { return decimal.Round((Convert.ToDecimal(whiteTimer.ElapsedMilliseconds) + whiteOffsetTime) / 1000, 1); }
-            private set { }
+            private set { FirePropertyChanged("WhiteTimer"); }
         }
 
         /// <summary>
@@ -132,7 +148,7 @@ namespace Othello_logique
         public bool IsSavingInProgress
         {
             get { return isSavingInProgress; }
-            private set { }
+            private set { isSavingInProgress = value; }
         }
 
         /// <summary>
@@ -141,29 +157,25 @@ namespace Othello_logique
         public void NewGame(int player = BLACK)
         {
             this.Player = player;
-            currentPlayer = player;
+            CurrentPlayer = player;
             board = Board.StartingBoard();
+            dt.Tick += new EventHandler(dt_Tick);
+            dt.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            dt.Start();
             blackTimer.Reset();
             whiteTimer.Reset();
             blackTimer.Start();
-            whiteScore = board.GetWhiteScore();
-            blackScore = board.GetBlackScore();
+            WhiteScore = board.GetWhiteScore();
+            BlackScore = board.GetBlackScore();
 
             // Happends if starting online game as second player
             if (player == WHITE)
             {
-                currentPlayer = -player;
-                isOpponentTurn = true;
+                CurrentPlayer = -player;
+                IsOpponentTurn = true;
                 int[] move = Network.GetInput();
-                playMove(move[0], move[1], currentPlayer);
+                playMove(move[0], move[1], CurrentPlayer);
             }
-
-            FirePropertyChanged("CurrPlayBind");
-            FirePropertyChanged("BlackTimer");
-            FirePropertyChanged("WhiteTimer");
-            FirePropertyChanged("BlackScore");
-            FirePropertyChanged("WhiteScore");
-
         }
 
         /// <summary>
@@ -178,13 +190,8 @@ namespace Othello_logique
             this.opponentIp = opponentIp;
             this.opponengPort = opponentPort;
             NewGame(player);
-            whiteScore = board.GetWhiteScore();
-            blackScore = board.GetBlackScore();
-            FirePropertyChanged("CurrPlayBind");
-            FirePropertyChanged("BlackTimer");
-            FirePropertyChanged("WhiteTimer");
-            FirePropertyChanged("BlackScore");
-            FirePropertyChanged("WhiteScore");
+            WhiteScore = board.GetWhiteScore();
+            BlackScore = board.GetBlackScore();
         }
 
         /// <summary>
@@ -192,12 +199,11 @@ namespace Othello_logique
         /// </summary>
         public void PauseGame()
         {
-            if (currentPlayer == WHITE)
+            if (CurrentPlayer == WHITE)
                 whiteTimer.Stop();
             else
                 blackTimer.Stop();
-            FirePropertyChanged("BlackTimer");
-            FirePropertyChanged("WhiteTimer");
+            dt.Stop();
         }
 
         /// <summary>
@@ -205,12 +211,11 @@ namespace Othello_logique
         /// </summary>
         public void ResumeGame()
         {
-            if (currentPlayer == WHITE)
+            dt.Start();
+            if (CurrentPlayer == WHITE)
                 whiteTimer.Start();
             else
                 blackTimer.Start();
-            FirePropertyChanged("BlackTimer");
-            FirePropertyChanged("WhiteTimer");
         }
 
         /// <summary>
@@ -222,21 +227,11 @@ namespace Othello_logique
             if (boardHistory.Any())
             {
                 board.SetBoard(boardHistory.Pop());
-                currentPlayer = playerHistory.Pop();
-                whiteScore = board.GetWhiteScore();
-                blackScore = board.GetBlackScore();
-                FirePropertyChanged("CurrPlayBind");
-                FirePropertyChanged("BlackTimer");
-                FirePropertyChanged("WhiteTimer");
-                FirePropertyChanged("BlackScore");
-                FirePropertyChanged("WhiteScore");
+                CurrentPlayer = playerHistory.Pop();
+                WhiteScore = board.GetWhiteScore();
+                BlackScore = board.GetBlackScore();
                 return true;
             }
-            else
-                FirePropertyChanged("CurrPlayBind");
-                FirePropertyChanged("BlackTimer");
-                FirePropertyChanged("WhiteTimer");
-
             return false;
         }
 
@@ -247,8 +242,8 @@ namespace Othello_logique
         /// <param name="fileName">File path default value is "Save.xml".</param>
         public void SaveGame(string fileName = "Save.xml")
         {
-            while (isSavingInProgress == true) ;
-            isSavingInProgress = true;
+            while (IsSavingInProgress == true) ;
+            IsSavingInProgress = true;
             new Thread(() =>
             {
                 SavableEngine engineState = new SavableEngine();
@@ -277,12 +272,12 @@ namespace Othello_logique
         /// <param name="fileName">File path default value is "Save.xml".</param>
         public void LoadGame(string fileName = "Save.xml")
         {
-            while (isSavingInProgress == true) ;
+            while (IsSavingInProgress == true) ;
             SavableEngine sourceEngine;
             Deserialize(fileName, out sourceEngine);
             this.whiteOffsetTime = sourceEngine.WhiteTimer;
             this.blackOffsetTime = sourceEngine.BlackTimer;
-            this.currentPlayer = sourceEngine.Player;
+            this.CurrentPlayer = sourceEngine.Player;
             this.Player = sourceEngine.Player;
 
             this.board.SetBoard(Engine.Convert1DTo2DBoardArray(sourceEngine.Board));
@@ -290,13 +285,8 @@ namespace Othello_logique
 
             foreach (int[] source in sourceEngine.BoardHistory)
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
-            whiteScore = board.GetWhiteScore();
-            blackScore = board.GetBlackScore();
-            FirePropertyChanged("CurrPlayBind");
-            FirePropertyChanged("BlackTimer");
-            FirePropertyChanged("WhiteTimer");
-            FirePropertyChanged("BlackScore");
-            FirePropertyChanged("WhiteScore");
+            WhiteScore = board.GetWhiteScore();
+            BlackScore = board.GetBlackScore();
         }
 
         /// <summary>
@@ -310,7 +300,7 @@ namespace Othello_logique
             Tuple<int, int> index = new Tuple<int, int>(column, line);
             SaveState();
             board.PlayMove(index, player);
-            if (isOnline && isOpponentTurn == false)
+            if (isOnline && IsOpponentTurn == false)
                 Network.SendInput(column, line, opponentIp, opponengPort);
             nextTurn();
         }
@@ -422,10 +412,10 @@ namespace Othello_logique
         private void nextTurn()
         {
             if (board.GameOver() == true)
-                currentPlayer = EMPTY;
+                CurrentPlayer = EMPTY;
             else
             {
-                if (currentPlayer == BLACK)
+                if (CurrentPlayer == BLACK)
                 {
                     blackTimer.Stop();
                     whiteTimer.Start();
@@ -435,23 +425,18 @@ namespace Othello_logique
                     whiteTimer.Stop();
                     blackTimer.Start();
                 }
-                currentPlayer = -currentPlayer;
-                isOpponentTurn = !isOpponentTurn;
-                if (board.CanPlay(currentPlayer) == false)
+                CurrentPlayer = -CurrentPlayer;
+                IsOpponentTurn = !IsOpponentTurn;
+                if (board.CanPlay(CurrentPlayer) == false)
                     nextTurn();
-                if (isOnline && isOpponentTurn)
+                if (isOnline && IsOpponentTurn)
                 {
                     int[] move = Network.GetInput();
-                    playMove(move[0], move[1], currentPlayer);
+                    playMove(move[0], move[1], CurrentPlayer);
                 }
             }
-            whiteScore = getWhiteScore();
-            blackScore = getBlackScore();
-            FirePropertyChanged("CurrPlayBind");
-            FirePropertyChanged("BlackTimer");
-            FirePropertyChanged("WhiteTimer");
-            FirePropertyChanged("BlackScore");
-            FirePropertyChanged("WhiteScore");
+            WhiteScore = getWhiteScore();
+            BlackScore = getBlackScore();
         }
 
         /// <summary>
@@ -460,7 +445,7 @@ namespace Othello_logique
         private void SaveState()
         {
             boardHistory.Push(board.GetBoardCopy());
-            playerHistory.Push(currentPlayer);
+            playerHistory.Push(CurrentPlayer);
         }
 
         /// <summary>
@@ -542,7 +527,7 @@ namespace Othello_logique
             StreamWriter writer = new StreamWriter(fileName);
             serializer.Serialize(writer, engineState);
             writer.Close();
-            isSavingInProgress = false;
+            IsSavingInProgress = false;
         }
 
         /// <summary>
@@ -594,6 +579,17 @@ namespace Othello_logique
                     }
                 }
             return myBoard;
+        }
+
+        /// <summary>
+        /// Update the timers in the UI 10 time per seconde.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dt_Tick(object sender, EventArgs e)
+        {
+            BlackTimer = 0;
+            WhiteTimer = 0;
         }
     }
 }

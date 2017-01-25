@@ -33,12 +33,11 @@ namespace Othello_logique
         private int[,] board = new int[BOARD_SIZE, BOARD_SIZE];
 
         //public field
-        public int[,] BoardState
+        public int this[int idx1, int idx2]
         {
-            get { return board; }
-            private set { }
+            get { return board[idx1, idx2]; }
+            set { board[idx1, idx2] = value; }
         }
-
 
         /// <summary>
         /// Returns true if the given player can make any move.
@@ -139,7 +138,7 @@ namespace Othello_logique
                         {
                             do
                             {
-                                board[xTemp, yTemp] = player;
+                                this[xTemp, yTemp] = player;
                                 distance--;
                                 xTemp -= xDirection;
                                 yTemp -= yDirection;
@@ -196,10 +195,10 @@ namespace Othello_logique
                     startingBoard.board[x, y] = EMPTY;
                 }
             }
-            startingBoard.board[3, 3] = WHITE;
-            startingBoard.board[3, 4] = BLACK;
-            startingBoard.board[4, 3] = BLACK;
-            startingBoard.board[4, 4] = WHITE;
+            startingBoard[3, 3] = WHITE;
+            startingBoard[3, 4] = BLACK;
+            startingBoard[4, 3] = BLACK;
+            startingBoard[4, 4] = WHITE;
             
             return startingBoard;
         }
@@ -210,7 +209,8 @@ namespace Othello_logique
         /// <param name="SourceBoard"></param>
         public void SetBoard(int[,] SourceBoard)
         {
-            board = SourceBoard;
+            foreach (Tuple<int, int> index in GetSquareIndices())
+                SetSquare(index,SourceBoard[index.Item1, index.Item2]);
         }
 
         /*############################################################################
@@ -252,7 +252,7 @@ namespace Othello_logique
         {
             if (IsSquareValid(index) && CanMove(index, player))
             {
-                board[index.Item1, index.Item2] = player;
+                this[index.Item1, index.Item2] = player;
                 return true;
             }
             return false;
