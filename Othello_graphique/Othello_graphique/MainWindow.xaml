@@ -1,0 +1,60 @@
+﻿<Window x:Class="Othello_graphique.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Othello_graphique"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="550"
+        TextOptions.TextFormattingMode="Display" SnapsToDevicePixels="True" UseLayoutRounding="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36*"/>
+            <RowDefinition Height="335*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="140*"/>
+            <ColumnDefinition Width="41*"/>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="Board" Grid.Row="1" Grid.Column ="0" Margin="5,0.333,0,-0.333">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <Button x:Name="btnNew" Content="New Game" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="btnNew_Click"/>
+        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="btnSave_Click"/>
+        <Button x:Name="btnLoad" Content="Load" HorizontalAlignment="Left" Margin="214,10,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="btnLoad_Click"/>
+        <Button x:Name="btnPause" Content="Pause" HorizontalAlignment="Left" Margin="319,10,0,0" VerticalAlignment="Top" Width="75" Height="20" Click="btnPause_Click"/>
+        <Label x:Name="lblturn" Content="Turn :" Grid.Column="1" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
+        <TextBlock x:Name="tbTurn" Grid.Column="1" HorizontalAlignment="Left" Margin="54,12,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+
+        <Label  Content="Score:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,74.333,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <TextBlock  x:Name="lblScoreWhite" Grid.Column="1" HorizontalAlignment="Right" Margin="10,80,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label  Content="Timer:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,109.333,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <TextBlock  x:Name="lblTimeWhite"  Grid.Column="1" HorizontalAlignment="Right" Margin="10,115,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label  Content="Score:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,234.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <TextBlock  x:Name="lblScoreBlack" Grid.Column="1" HorizontalAlignment="Right" Margin="10,240,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label  Content="Timer:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,269.333,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.453,-0.038"/>
+        <TextBlock  x:Name="lblTimeBlack" Grid.Column="1" HorizontalAlignment="Right" Margin="10,275,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        
+
+
+    </Grid>
+</Window>
