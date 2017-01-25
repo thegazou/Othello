@@ -10,14 +10,14 @@
         TextOptions.TextFormattingMode="Display" SnapsToDevicePixels="True" UseLayoutRounding="True" WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,0.333,-0.333">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="550*"/>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="500*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="570*"/>
             <ColumnDefinition Width="223*"/>
         </Grid.ColumnDefinitions>
-        <Grid x:Name="Board" Grid.Row="1" Grid.Column ="0" Margin="5,5.667,0,0" HorizontalAlignment="Left" Width="543" Height="513" VerticalAlignment="Top">
+        <Grid x:Name="Board" Grid.Row="1" Grid.Column ="0" Margin="60,10,0,0" HorizontalAlignment="Left" Width="450" Height="450" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -39,11 +39,11 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
         </Grid>
-        <Button x:Name="btnNew" Content="New Game" HorizontalAlignment="Left" Margin="33,11,0,0" VerticalAlignment="Top" Width="76" Height="20" Click="btnNew_Click"/>
-        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="133,11,0,0" VerticalAlignment="Top" Width="77" Height="20" Click="btnSave_Click"/>
-        <Button x:Name="btnLoad" Content="Load" HorizontalAlignment="Left" Margin="237,11,0,0" VerticalAlignment="Top" Width="77" Height="20" Click="btnLoad_Click"/>
-        <Button x:Name="btnPause" Content="Pause" HorizontalAlignment="Left" Margin="342,11,0,0" VerticalAlignment="Top" Width="76" Height="20" Click="btnPause_Click"/>
-        <Button x:Name="btnUndo" Content="Undo" HorizontalAlignment="Left" Margin="451,10,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.118,-0.048" Height="21" Click="btnUndo_Click"/>
+        <Button x:Name="btnNew" Content="New Game" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Width="76" Height="21" Click="btnNew_Click"/>
+        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="76" Height="21" Click="btnSave_Click"/>
+        <Button x:Name="btnLoad" Content="Load" HorizontalAlignment="Left" Margin="100,37,0,0" VerticalAlignment="Top" Width="80" Height="21" Click="btnLoad_Click"/>
+        <Button x:Name="btnPause" Content="Pause" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="76" Height="21" Click="btnPause_Click"/>
+        <Button x:Name="btnUndo" Content="Undo" HorizontalAlignment="Left" Margin="100,64,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.118,-0.048" Height="21" Click="btnUndo_Click"/>
 
         <Label x:Name="lblturn" Content="Turn :" Grid.Column="1" HorizontalAlignment="Left" Margin="36,5,0,0" VerticalAlignment="Top" FontSize="24" Height="43" Width="70" Grid.RowSpan="2"/>
         <TextBlock x:Name="tbTurn" Grid.Column="1" HorizontalAlignment="Left" Margin="106,11,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" FontSize="24" Height="32" Width="100"/>
@@ -62,8 +62,15 @@
 
         <Label x:Name="label" Content="White" Grid.Column="1" HorizontalAlignment="Left" Margin="106,62.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="27" Width="41"/>
         <Label x:Name="label_Copy" Content="Black" Grid.Column="1" Margin="106,222.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="27" HorizontalAlignment="Left" Width="37"/>
-        
-        
+        <Button x:Name="btnOnline" Content="Online" HorizontalAlignment="Left" Margin="100,10,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="tbxIp" HorizontalAlignment="Left" Height="26" Margin="361,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Tag=""/>
+        <TextBox x:Name="tbxPort" HorizontalAlignment="Left" Height="28" Margin="362,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Tag=""/>
+        <Label x:Name="label1" Content="IP" HorizontalAlignment="Left" Margin="325,5,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2" Content="Port" HorizontalAlignment="Left" Margin="325,37,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="rbtnBlack" Content="Black" HorizontalAlignment="Left" Margin="361,73,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <RadioButton x:Name="rbtnWhite" Content="White" HorizontalAlignment="Left" Margin="502,73,0,0" VerticalAlignment="Top"/>
+
+
 
 
 

@@ -182,5 +182,29 @@ namespace Othello_graphique
             engine.Undo();
             majBoard();
         }
+
+        private void btnOnline_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string opponentIp = tbxIp.Text;
+                int opponentPort = Convert.ToInt32(tbxPort.Text);
+                int player;
+                if(rbtnBlack.IsChecked == true)
+                {
+                    player = 1;
+                }
+                else
+                {
+                    player = -1;
+                }
+                engine.NewOnlineGame(opponentIp, opponentPort, player);
+            }
+            catch
+            {
+                Console.WriteLine("Fail to start Online Mode");
+            }
+            majBoard();
+        }
     }
 }
