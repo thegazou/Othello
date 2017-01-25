@@ -6,8 +6,21 @@ using System.Linq;
 
 namespace Othello_logique
 {
-    class Board
+    class Board : INotifyPropertyChanged
     {
+
+        #region INotifyPropertyChanged implementation
+        public event PropertyChangedEventHandler PropertyChanged;
+        // Méthode d'aide pour lancer PropertyChanged
+        private void FirePropertyChanged(string name)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+        #endregion
+
 
         //public constants
         public const int BOARD_SIZE = 8;
@@ -25,6 +38,7 @@ namespace Othello_logique
             get { return board; }
             private set { }
         }
+
 
         /// <summary>
         /// Returns true if the given player can make any move.
@@ -186,6 +200,7 @@ namespace Othello_logique
             startingBoard.board[3, 4] = BLACK;
             startingBoard.board[4, 3] = BLACK;
             startingBoard.board[4, 4] = WHITE;
+            
             return startingBoard;
         }
 

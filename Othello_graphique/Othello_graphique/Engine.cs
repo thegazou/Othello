@@ -50,6 +50,9 @@ namespace Othello_logique
         private string opponentIp;
         private int opponengPort;
         private bool isOpponentTurn;
+        private int whiteScore;
+        private int blackScore;
+        
 
         //properties
         public bool IsOpponentTurn
@@ -93,20 +96,33 @@ namespace Othello_logique
             private set { }
         }
 
+        public int WhiteScore
+        {
+            get { return whiteScore; }
+            private set { }
+        }
+
+        public int BlackScore
+        {
+            get { return blackScore; }
+            private set { }
+        }
+
         /// <summary>
         /// Get the playing time of the black player rounded to one decimal.
         /// </summary>
         public Decimal BlackTimer
         {
-            get { return decimal.Round(Convert.ToDecimal(blackTimer.ElapsedMilliseconds) + blackOffsetTime, 1); }
+            get { return decimal.Round((Convert.ToDecimal(blackTimer.ElapsedMilliseconds) + blackOffsetTime)/1000, 1); }
             private set { }
+            
         }
         /// <summary>
         /// Get the playing time of the white player rounded to one decimal.
         /// </summary>
         public Decimal WhiteTimer
         {
-            get { return decimal.Round(Convert.ToDecimal(whiteTimer.ElapsedMilliseconds) + whiteOffsetTime, 1); }
+            get { return decimal.Round((Convert.ToDecimal(whiteTimer.ElapsedMilliseconds) + whiteOffsetTime) / 1000, 1); }
             private set { }
         }
 
@@ -130,6 +146,8 @@ namespace Othello_logique
             blackTimer.Reset();
             whiteTimer.Reset();
             blackTimer.Start();
+            whiteScore = board.GetWhiteScore();
+            blackScore = board.GetBlackScore();
 
             // Happends if starting online game as second player
             if (player == WHITE)
@@ -139,9 +157,12 @@ namespace Othello_logique
                 int[] move = Network.GetInput();
                 playMove(move[0], move[1], currentPlayer);
             }
+
             FirePropertyChanged("CurrPlayBind");
             FirePropertyChanged("BlackTimer");
             FirePropertyChanged("WhiteTimer");
+            FirePropertyChanged("BlackScore");
+            FirePropertyChanged("WhiteScore");
 
         }
 
@@ -157,9 +178,13 @@ namespace Othello_logique
             this.opponentIp = opponentIp;
             this.opponengPort = opponentPort;
             NewGame(player);
+            whiteScore = board.GetWhiteScore();
+            blackScore = board.GetBlackScore();
             FirePropertyChanged("CurrPlayBind");
             FirePropertyChanged("BlackTimer");
             FirePropertyChanged("WhiteTimer");
+            FirePropertyChanged("BlackScore");
+            FirePropertyChanged("WhiteScore");
         }
 
         /// <summary>
@@ -198,15 +223,20 @@ namespace Othello_logique
             {
                 board.SetBoard(boardHistory.Pop());
                 currentPlayer = playerHistory.Pop();
+                whiteScore = board.GetWhiteScore();
+                blackScore = board.GetBlackScore();
                 FirePropertyChanged("CurrPlayBind");
                 FirePropertyChanged("BlackTimer");
                 FirePropertyChanged("WhiteTimer");
+                FirePropertyChanged("BlackScore");
+                FirePropertyChanged("WhiteScore");
                 return true;
             }
             else
                 FirePropertyChanged("CurrPlayBind");
                 FirePropertyChanged("BlackTimer");
                 FirePropertyChanged("WhiteTimer");
+
             return false;
         }
 
@@ -260,9 +290,13 @@ namespace Othello_logique
 
             foreach (int[] source in sourceEngine.BoardHistory)
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
+            whiteScore = board.GetWhiteScore();
+            blackScore = board.GetBlackScore();
             FirePropertyChanged("CurrPlayBind");
             FirePropertyChanged("BlackTimer");
             FirePropertyChanged("WhiteTimer");
+            FirePropertyChanged("BlackScore");
+            FirePropertyChanged("WhiteScore");
         }
 
         /// <summary>
@@ -411,9 +445,13 @@ namespace Othello_logique
                     playMove(move[0], move[1], currentPlayer);
                 }
             }
+            whiteScore = getWhiteScore();
+            blackScore = getBlackScore();
             FirePropertyChanged("CurrPlayBind");
             FirePropertyChanged("BlackTimer");
             FirePropertyChanged("WhiteTimer");
+            FirePropertyChanged("BlackScore");
+            FirePropertyChanged("WhiteScore");
         }
 
         /// <summary>

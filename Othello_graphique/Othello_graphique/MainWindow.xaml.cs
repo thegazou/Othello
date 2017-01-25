@@ -23,10 +23,11 @@ namespace Othello_graphique
     {
         private Tile[,] listTiles = new Tile[8, 8];
         private Engine engine = new Engine();
+        private Boolean isPaused = false;
         public MainWindow()
         {
             InitializeComponent();
-            engine.NewGame();
+            //engine.NewGame();
             InitializeBinding();
             initializeBoard();
 
@@ -35,16 +36,21 @@ namespace Othello_graphique
         public void Tile_Click(object sender, RoutedEventArgs e)
         {
             Tile tile = (Tile)sender;
-
-            if(engine.isPlayable(tile.Col,tile.Row,engine.CurrentPlayer))
+            try
             {
-                engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
-                lblScoreBlack.Content = engine.getWhiteScore().ToString();
-                lblScoreWhite.Content = engine.getBlackScore().ToString();
+                if (engine.isPlayable(tile.Col, tile.Row, engine.CurrentPlayer) && !isPaused)
+                {
+                    engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
+                    //lblScoreBlack.Content = engine.getWhiteScore().ToString();
+                    //lblScoreWhite.Content = engine.getBlackScore().ToString();
+                    majBoard();
+                }
+                
             }
-            majBoard();
-            
-            
+            catch
+            {
+                Console.WriteLine("Aucune partie en cours");
+            }
         }
 
         private void initializeBoard()
@@ -56,7 +62,6 @@ namespace Othello_graphique
                     listTiles[i, j] = new Tile(this, i, j);
                     Grid.SetRow(listTiles[i, j], i);
                     Grid.SetColumn(listTiles[i, j], j);
-                    //listTiles[i, j].Pion = engine.board.GetSquare(j, i);
                     Board.Children.Add(listTiles[i, j]);
                    
                 }
@@ -113,11 +118,29 @@ namespace Othello_graphique
             BindingWhiteTimer.Source = engine;
             lblTimeWhite.DataContext = engine;
             lblTimeWhite.SetBinding(TextBlock.TextProperty, BindingWhiteTimer);
-            
+
+            //Binding White Score
+            Binding BindingWhiteScore = new Binding();
+            BindingWhiteScore.Path = new PropertyPath("WhiteScore");
+            BindingWhiteScore.Mode = BindingMode.OneWay;
+            BindingWhiteScore.Source = engine;
+            lblScoreWhite.DataContext = engine;
+            lblScoreWhite.SetBinding(TextBlock.TextProperty, BindingWhiteScore);
+
+            //Binding Black Score
+            Binding BindingBlackScore = new Binding();
+            BindingBlackScore.Path = new PropertyPath("BlackScore");
+            BindingBlackScore.Mode = BindingMode.OneWay;
+            BindingBlackScore.Source = engine;
+            lblScoreBlack.DataContext = engine;
+            lblScoreBlack.SetBinding(TextBlock.TextProperty, BindingBlackScore);
+
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
+            isPaused = false;
+            btnPause.Content = "Pause";
             engine.NewGame();
             majBoard();
         }
@@ -129,15 +152,29 @@ namespace Othello_graphique
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
+            isPaused = false;
+            btnPause.Content = "Pause";
             engine.LoadGame();
             majBoard();
-            lblScoreBlack.Content = engine.getWhiteScore().ToString();
-            lblScoreWhite.Content = engine.getBlackScore().ToString();
+            //lblScoreBlack.Content = engine.getWhiteScore().ToString();
+            //lblScoreWhite.Content = engine.getBlackScore().ToString();
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
-            engine.PauseGame();
+            if (!isPaused)
+            {
+                btnPause.Content = "Resume";
+                engine.PauseGame();
+                isPaused = true;
+            }
+            else
+            {
+                btnPause.Content = "Pause";
+                engine.ResumeGame();
+                isPaused = false;
+            }
+            
         }
     }
 }

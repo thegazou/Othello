@@ -46,14 +46,16 @@
         <TextBlock x:Name="tbTurn" Grid.Column="1" HorizontalAlignment="Left" Margin="54,12,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
 
         <Label  Content="Score:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,74.333,10,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <Label  x:Name="lblScoreWhite" Grid.Column="1" HorizontalAlignment="Right" Margin="10,80,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <TextBlock  x:Name="lblScoreWhite" Grid.Column="1" HorizontalAlignment="Right" Margin="10,80,10,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Label  Content="Timer:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,109.333,10,0" Grid.Row="1" VerticalAlignment="Top"/>
         <TextBlock  x:Name="lblTimeWhite"  Grid.Column="1" HorizontalAlignment="Right" Margin="10,115,10,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Label  Content="Score:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,234.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-        <Label  x:Name="lblScoreBlack" Grid.Column="1" HorizontalAlignment="Right" Margin="10,240,10,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <TextBlock  x:Name="lblScoreBlack" Grid.Column="1" HorizontalAlignment="Right" Margin="10,240,10,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Label  Content="Timer:" Grid.Column="1" HorizontalAlignment="Left" Margin="10,269.333,0,0" Grid.Row="1" VerticalAlignment="Top" RenderTransformOrigin="0.453,-0.038"/>
         <TextBlock  x:Name="lblTimeBlack" Grid.Column="1" HorizontalAlignment="Right" Margin="10,275,10,0" Grid.Row="1" VerticalAlignment="Top"/>
-        
+        <Label x:Name="label" Content="White" Grid.Column="1" HorizontalAlignment="Left" Margin="44,42.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy" Content="Black" Grid.Column="1" HorizontalAlignment="Left" Margin="44,202.333,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+
 
 
     </Grid>
