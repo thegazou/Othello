@@ -29,7 +29,6 @@ namespace Othello_graphique
             engine.NewGame();
             InitializeBinding();
             initializeBoard();
-           
 
         }
 
@@ -57,10 +56,12 @@ namespace Othello_graphique
                     listTiles[i, j] = new Tile(this, i, j);
                     Grid.SetRow(listTiles[i, j], i);
                     Grid.SetColumn(listTiles[i, j], j);
+                    //listTiles[i, j].Pion = engine.board.GetSquare(j, i);
                     Board.Children.Add(listTiles[i, j]);
-                    
+                   
                 }
             }
+            //majBoard();
         }
 
         private void majBoard()

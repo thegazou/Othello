@@ -182,10 +182,10 @@ namespace Othello_logique
                     startingBoard.board[x, y] = EMPTY;
                 }
             }
-            startingBoard.board[3, 3] = BLACK;
-            startingBoard.board[3, 4] = WHITE;
-            startingBoard.board[4, 3] = WHITE;
-            startingBoard.board[4, 4] = BLACK;
+            startingBoard.board[3, 3] = WHITE;
+            startingBoard.board[3, 4] = BLACK;
+            startingBoard.board[4, 3] = BLACK;
+            startingBoard.board[4, 4] = WHITE;
             return startingBoard;
         }
 
