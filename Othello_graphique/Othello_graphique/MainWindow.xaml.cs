@@ -108,16 +108,16 @@ namespace Othello_graphique
             BindingBlackTimer.Path = new PropertyPath("BlackTimer");
             BindingBlackTimer.Mode = BindingMode.OneWay;
             BindingBlackTimer.Source = engine;
-            lblTimeBlack.DataContext = engine;
-            lblTimeBlack.SetBinding(TextBlock.TextProperty, BindingBlackTimer);
+            lblTimerBlack.DataContext = engine;
+            lblTimerBlack.SetBinding(TextBlock.TextProperty, BindingBlackTimer);
 
             //Binding White Timer
             Binding BindingWhiteTimer = new Binding();
             BindingWhiteTimer.Path = new PropertyPath("WhiteTimer");
             BindingWhiteTimer.Mode = BindingMode.OneWay;
             BindingWhiteTimer.Source = engine;
-            lblTimeWhite.DataContext = engine;
-            lblTimeWhite.SetBinding(TextBlock.TextProperty, BindingWhiteTimer);
+            lblTimerWhite.DataContext = engine;
+            lblTimerWhite.SetBinding(TextBlock.TextProperty, BindingWhiteTimer);
 
             //Binding White Score
             Binding BindingWhiteScore = new Binding();
