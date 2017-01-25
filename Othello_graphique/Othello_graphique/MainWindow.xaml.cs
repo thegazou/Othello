@@ -95,13 +95,15 @@ namespace Othello_graphique
 
         private void InitializeBinding()
         {
-            //Binding Turn
+           //Binding Turn
             Binding BindingTurn = new Binding();
-            BindingTurn.Path = new PropertyPath("CurrPlayBind");
+            BindingTurn.Path = new PropertyPath("CurrentPlayer");
             BindingTurn.Mode = BindingMode.OneWay;
+            BindingTurn.Converter = new StringConverter();
             BindingTurn.Source = engine;
             tbTurn.DataContext = engine;
             tbTurn.SetBinding(TextBlock.TextProperty, BindingTurn);
+            
 
             //Binding Black Timer
             Binding BindingBlackTimer = new Binding();

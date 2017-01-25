@@ -12,3 +12,4 @@ C:\Cours\dotNet\Projet\git\Othello\Othello_graphique\Othello_graphique\obj\Debug
 C:\Cours\dotNet\Projet\git\Othello\Othello_graphique\Othello_graphique\obj\Debug\Othello_graphique.csproj.GenerateResource.Cache
 C:\Cours\dotNet\Projet\git\Othello\Othello_graphique\Othello_graphique\obj\Debug\Othello_graphique.exe
 C:\Cours\dotNet\Projet\git\Othello\Othello_graphique\Othello_graphique\obj\Debug\Othello_graphique.pdb
+C:\Cours\dotNet\Projet\git\Othello\Othello_graphique\Othello_graphique\obj\Debug\GeneratedInternalTypeHelper.g.cs

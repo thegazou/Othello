@@ -90,24 +90,7 @@ namespace Othello_logique
         public int CurrentPlayer
         {
             get { return currentPlayer; }
-            private set { currentPlayer = value; }
-        }
-
-        public String CurrPlayBind
-        {
-            get
-            {
-                if (CurrentPlayer == 1)
-                {
-                    return "Black";
-                }
-                if (CurrentPlayer == -1)
-                {
-                    return "White";
-                }
-                return "End Game";
-            }
-            private set { }
+            private set { currentPlayer = value; FirePropertyChanged("CurrentPlayer"); }
         }
 
 

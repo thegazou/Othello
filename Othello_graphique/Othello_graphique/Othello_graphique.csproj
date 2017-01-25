@@ -69,6 +69,7 @@
     <Compile Include="IPlayable.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="SavableEngine.cs" />
+    <Compile Include="StringConverter.cs" />
     <Compile Include="TcpObject.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="MainWindow.xaml.cs">
