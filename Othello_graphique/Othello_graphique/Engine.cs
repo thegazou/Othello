@@ -6,11 +6,26 @@ using System.Diagnostics;
 using System.Xml.Serialization;
 using System.IO;
 using System.Threading;
+using System.ComponentModel;
 
 namespace Othello_logique
 {
-    class Engine : IPlayable
+    class Engine : IPlayable, INotifyPropertyChanged
     {
+
+        #region INotifyPropertyChanged implementation
+        public event PropertyChangedEventHandler PropertyChanged;
+        // Méthode d'aide pour lancer PropertyChanged
+        private void FirePropertyChanged(string name)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+        #endregion
+
+
         //public constants
         public const int BLACK = 1;
         public const int WHITE = -1;
@@ -61,6 +76,23 @@ namespace Othello_logique
             private set { }
         }
 
+        public String CurrPlayBind
+        {
+            get
+            {
+                if(currentPlayer == 1)
+                {
+                    return "Black";
+                }
+                if(currentPlayer == -1)
+                {
+                    return "White";
+                }
+                return "End Game";
+            }
+            private set { }
+        }
+
         /// <summary>
         /// Get the playing time of the black player rounded to one decimal.
         /// </summary>
@@ -107,6 +139,9 @@ namespace Othello_logique
                 int[] move = Network.GetInput();
                 playMove(move[0], move[1], currentPlayer);
             }
+            FirePropertyChanged("CurrPlayBind");
+            FirePropertyChanged("BlackTimer");
+            FirePropertyChanged("WhiteTimer");
 
         }
 
@@ -122,6 +157,9 @@ namespace Othello_logique
             this.opponentIp = opponentIp;
             this.opponengPort = opponentPort;
             NewGame(player);
+            FirePropertyChanged("CurrPlayBind");
+            FirePropertyChanged("BlackTimer");
+            FirePropertyChanged("WhiteTimer");
         }
 
         /// <summary>
@@ -133,6 +171,8 @@ namespace Othello_logique
                 whiteTimer.Stop();
             else
                 blackTimer.Stop();
+            FirePropertyChanged("BlackTimer");
+            FirePropertyChanged("WhiteTimer");
         }
 
         /// <summary>
@@ -144,6 +184,8 @@ namespace Othello_logique
                 whiteTimer.Start();
             else
                 blackTimer.Start();
+            FirePropertyChanged("BlackTimer");
+            FirePropertyChanged("WhiteTimer");
         }
 
         /// <summary>
@@ -156,10 +198,16 @@ namespace Othello_logique
             {
                 board.SetBoard(boardHistory.Pop());
                 currentPlayer = playerHistory.Pop();
+                FirePropertyChanged("CurrPlayBind");
+                FirePropertyChanged("BlackTimer");
+                FirePropertyChanged("WhiteTimer");
                 return true;
             }
             else
-                return false;
+                FirePropertyChanged("CurrPlayBind");
+                FirePropertyChanged("BlackTimer");
+                FirePropertyChanged("WhiteTimer");
+            return false;
         }
 
         /// <summary>
@@ -212,6 +260,9 @@ namespace Othello_logique
 
             foreach (int[] source in sourceEngine.BoardHistory)
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
+            FirePropertyChanged("CurrPlayBind");
+            FirePropertyChanged("BlackTimer");
+            FirePropertyChanged("WhiteTimer");
         }
 
         /// <summary>
@@ -360,6 +411,9 @@ namespace Othello_logique
                     playMove(move[0], move[1], currentPlayer);
                 }
             }
+            FirePropertyChanged("CurrPlayBind");
+            FirePropertyChanged("BlackTimer");
+            FirePropertyChanged("WhiteTimer");
         }
 
         /// <summary>

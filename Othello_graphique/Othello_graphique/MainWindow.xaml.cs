@@ -26,8 +26,8 @@ namespace Othello_graphique
         public MainWindow()
         {
             InitializeComponent();
-            InitializeBinding();
             engine.NewGame();
+            InitializeBinding();
             initializeBoard();
            
 
@@ -40,6 +40,8 @@ namespace Othello_graphique
             if(engine.isPlayable(tile.Col,tile.Row,engine.CurrentPlayer))
             {
                 engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
+                lblScoreBlack.Content = engine.getWhiteScore().ToString();
+                lblScoreWhite.Content = engine.getBlackScore().ToString();
             }
             majBoard();
             
@@ -55,12 +57,10 @@ namespace Othello_graphique
                     listTiles[i, j] = new Tile(this, i, j);
                     Grid.SetRow(listTiles[i, j], i);
                     Grid.SetColumn(listTiles[i, j], j);
-
                     Board.Children.Add(listTiles[i, j]);
                     
                 }
             }
-            //majBoard();
         }
 
         private void majBoard()
@@ -91,7 +91,7 @@ namespace Othello_graphique
         {
             //Binding Turn
             Binding BindingTurn = new Binding();
-            BindingTurn.Path = new PropertyPath("CurrentPlayer");
+            BindingTurn.Path = new PropertyPath("CurrPlayBind");
             BindingTurn.Mode = BindingMode.OneWay;
             BindingTurn.Source = engine;
             tbTurn.DataContext = engine;
@@ -104,16 +104,6 @@ namespace Othello_graphique
             BindingBlackTimer.Source = engine;
             lblTimeBlack.DataContext = engine;
             lblTimeBlack.SetBinding(TextBlock.TextProperty, BindingBlackTimer);
-            
-            /*
-            //Binding Black Score
-            Binding BindingBlackScore = new Binding();
-            BindingBlackScore.Path = new PropertyPath("BlackTimer");
-            BindingBlackScore.Mode = BindingMode.OneWay;
-            BindingBlackScore.Source = engine;
-            lblTimeBlack.DataContext = engine;
-            lblTimeBlack.SetBinding(TextBlock.TextProperty, BindingBlackScore);
-            */
 
             //Binding White Timer
             Binding BindingWhiteTimer = new Binding();
@@ -122,27 +112,13 @@ namespace Othello_graphique
             BindingWhiteTimer.Source = engine;
             lblTimeWhite.DataContext = engine;
             lblTimeWhite.SetBinding(TextBlock.TextProperty, BindingWhiteTimer);
-            /*
-            //Binding White Score
-            Binding BindingWhiteScore = new Binding();
-            BindingWhiteScore.Path = new PropertyPath("BlackTimer");
-            BindingWhiteScore.Mode = BindingMode.OneWay;
-            BindingWhiteScore.Source = engine;
-            lblTimeBlack.DataContext = engine;
-            lblTimeBlack.SetBinding(TextBlock.TextProperty, BindingWhiteScore);
-            */
-
-            //Binding Board
-            Binding BindingBoard = new Binding();
-            BindingBoard.Path = new PropertyPath("BoardState");
-            BindingBoard.Mode = BindingMode.TwoWay;
-            BindingBoard.Source = engine.board;
             
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
             engine.NewGame();
+            majBoard();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -153,6 +129,9 @@ namespace Othello_graphique
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
             engine.LoadGame();
+            majBoard();
+            lblScoreBlack.Content = engine.getWhiteScore().ToString();
+            lblScoreWhite.Content = engine.getBlackScore().ToString();
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
