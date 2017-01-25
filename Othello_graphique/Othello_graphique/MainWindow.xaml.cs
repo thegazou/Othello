@@ -176,5 +176,11 @@ namespace Othello_graphique
             }
             
         }
+
+        private void btnUndo_Click(object sender, RoutedEventArgs e)
+        {
+            engine.Undo();
+            majBoard();
+        }
     }
 }

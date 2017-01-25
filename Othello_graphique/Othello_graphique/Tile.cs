@@ -26,6 +26,7 @@ namespace Othello_graphique
 
         private MainWindow parent;
         private int pion;
+
         public int Pion
         {
             get { return pion; }
