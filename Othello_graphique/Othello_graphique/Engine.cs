@@ -387,7 +387,7 @@ namespace Othello_logique
         /// </summary>
         private void nextTurn()
         {
-            if (board.GameOver() == false)
+            if (board.GameOver() == true)
                 currentPlayer = EMPTY;
             else
             {

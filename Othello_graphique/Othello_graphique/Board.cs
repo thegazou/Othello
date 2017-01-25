@@ -143,10 +143,10 @@ namespace Othello_logique
         /// <returns></returns>
         public bool GameOver()
         {
-            if (CanPlay(BLACK) == false || CanPlay(WHITE) == false)
-                return false;
-            else
+            if (CanPlay(BLACK) == false && CanPlay(WHITE) == false)
                 return true;
+            else
+                return false;
         }
 
         /// <summary>
