@@ -91,7 +91,6 @@ namespace Othello_logique
 
         /// <summary>
         /// Updates the board status with the given move.
-        /// For performance purpuses, the function does not check for the validity nor legality of the move.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="player"></param>
@@ -116,13 +115,13 @@ namespace Othello_logique
                         distance = 1;
                         xTemp = x + xDirection;
                         yTemp = y + yDirection;
-                        while (board[xTemp, yTemp] == -player)
+                        while (IsSquareValid(new Tuple<int, int>(xTemp, yTemp)) && board[xTemp, yTemp] == -player)
                         {
                             distance++;
                             xTemp += xDirection;
                             yTemp += yDirection;
                         }
-                        if (distance > 1 && board[xTemp, yTemp] == player)
+                        if (IsSquareValid(new Tuple<int, int>(xTemp, yTemp)) && distance > 1 && board[xTemp, yTemp] == player)
                         {
                             do
                             {
