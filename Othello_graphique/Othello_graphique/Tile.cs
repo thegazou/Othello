@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -95,5 +96,30 @@ namespace Othello_graphique
             }
         }
 
+        internal void SetBinding(int pion, Binding bindingBoard)
+        {
+            if (pion == 1)
+            {
+                Ellipse circle = new Ellipse();
+                circle.Width = this.ActualWidth * 0.9;
+                circle.Height = this.ActualHeight * 0.9;
+                circle.Fill = Brushes.Black;
+                circle.Stroke = Brushes.Black;
+                Content = circle;
+            }
+            else if (pion == -1)
+            {
+                Ellipse circle = new Ellipse();
+                circle.Width = this.ActualWidth * 0.9;
+                circle.Height = this.ActualHeight * 0.9;
+                circle.Fill = Brushes.White;
+                circle.Stroke = Brushes.White;
+                Content = circle;
+            }
+            else
+            {
+                Content = "";
+            }
+        }
     }
 }

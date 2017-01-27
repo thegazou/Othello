@@ -97,13 +97,13 @@ namespace Othello_logique
         public int WhiteScore
         {
             get { return whiteScore; }
-            private set { whiteScore = value; }
+            private set { whiteScore = value; FirePropertyChanged("WhiteScore"); }
         }
 
         public int BlackScore
         {
             get { return blackScore; }
-            private set { blackScore = value; }
+            private set { blackScore = value; FirePropertyChanged("BlackScore"); }
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Othello_logique
         /// </summary>
         public Decimal BlackTimer
         {
-            get { return decimal.Round((Convert.ToDecimal(blackTimer.ElapsedMilliseconds) + blackOffsetTime) / 1000, 1); }
+            get { return decimal.Round((Convert.ToDecimal(blackTimer.ElapsedMilliseconds) / 1000 + blackOffsetTime), 1); }
             private set { FirePropertyChanged("BlackTimer"); }
 
         }
@@ -121,7 +121,7 @@ namespace Othello_logique
         /// </summary>
         public Decimal WhiteTimer
         {
-            get { return decimal.Round((Convert.ToDecimal(whiteTimer.ElapsedMilliseconds) + whiteOffsetTime) / 1000, 1); }
+            get { return decimal.Round((Convert.ToDecimal(whiteTimer.ElapsedMilliseconds) / 1000 + whiteOffsetTime), 1); }
             private set { FirePropertyChanged("WhiteTimer"); }
         }
 
@@ -258,6 +258,8 @@ namespace Othello_logique
             while (IsSavingInProgress == true) ;
             SavableEngine sourceEngine;
             Deserialize(fileName, out sourceEngine);
+            this.whiteTimer.Reset();
+            this.blackTimer.Reset();
             this.whiteOffsetTime = sourceEngine.WhiteTimer;
             this.blackOffsetTime = sourceEngine.BlackTimer;
             this.CurrentPlayer = sourceEngine.Player;
@@ -270,6 +272,7 @@ namespace Othello_logique
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
             WhiteScore = board.GetWhiteScore();
             BlackScore = board.GetBlackScore();
+            PauseGame();
         }
 
         /// <summary>
