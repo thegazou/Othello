@@ -27,10 +27,9 @@ namespace Othello_graphique
         public MainWindow()
         {
             InitializeComponent();
-            //engine.NewGame();
-            InitializeBinding();
+            engine.NewGame();
             initializeBoard();
-
+            InitializeBinding();
         }
 
         public void Tile_Click(object sender, RoutedEventArgs e)
@@ -43,7 +42,7 @@ namespace Othello_graphique
                     engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
                     //lblScoreBlack.Content = engine.getWhiteScore().ToString();
                     //lblScoreWhite.Content = engine.getBlackScore().ToString();
-                    majBoard();
+                    //majBoard();
                 }
                 
             }
@@ -95,6 +94,20 @@ namespace Othello_graphique
 
         private void InitializeBinding()
         {
+            //Binding Board
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    Binding BindingBoard = new Binding();
+                    BindingBoard.Path = new PropertyPath("Board" + i + j);
+                    BindingBoard.Mode = BindingMode.TwoWay;
+                    BindingBoard.Source = engine.board[i,j];
+                    listTiles[i, j].DataContext = engine.board[i, j];
+                    listTiles[i, j].SetBinding(listTiles[i,j].Pion, BindingBoard);
+                }
+            }
+
            //Binding Turn
             Binding BindingTurn = new Binding();
             BindingTurn.Path = new PropertyPath("CurrentPlayer");
@@ -137,6 +150,8 @@ namespace Othello_graphique
             lblScoreBlack.DataContext = engine;
             lblScoreBlack.SetBinding(TextBlock.TextProperty, BindingBlackScore);
 
+
+            //listTiles[i,j].AddHandler()
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
@@ -144,7 +159,7 @@ namespace Othello_graphique
             isPaused = false;
             btnPause.Content = "Pause";
             engine.NewGame();
-            majBoard();
+            //majBoard();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -157,7 +172,7 @@ namespace Othello_graphique
             isPaused = false;
             btnPause.Content = "Pause";
             engine.LoadGame();
-            majBoard();
+            //majBoard();
             //lblScoreBlack.Content = engine.getWhiteScore().ToString();
             //lblScoreWhite.Content = engine.getBlackScore().ToString();
         }
@@ -182,7 +197,7 @@ namespace Othello_graphique
         private void btnUndo_Click(object sender, RoutedEventArgs e)
         {
             engine.Undo();
-            majBoard();
+            //majBoard();
         }
 
         private void btnOnline_Click(object sender, RoutedEventArgs e)

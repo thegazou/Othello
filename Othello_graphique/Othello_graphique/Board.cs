@@ -36,7 +36,7 @@ namespace Othello_logique
         public int this[int idx1, int idx2]
         {
             get { return board[idx1, idx2]; }
-            set { board[idx1, idx2] = value; }
+            set { board[idx1, idx2] = value; FirePropertyChanged("Board"); }
         }
 
         /// <summary>
