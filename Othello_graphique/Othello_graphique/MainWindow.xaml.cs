@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Othello_logique;
+using System.ComponentModel;
 
 namespace Othello_graphique
 {
@@ -42,7 +43,7 @@ namespace Othello_graphique
                     engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
                     //lblScoreBlack.Content = engine.getWhiteScore().ToString();
                     //lblScoreWhite.Content = engine.getBlackScore().ToString();
-                    //majBoard();
+                    majBoard();
                 }
                 
             }
@@ -65,7 +66,7 @@ namespace Othello_graphique
                    
                 }
             }
-            //majBoard();
+            majBoard();
         }
 
         private void majBoard()
@@ -84,7 +85,7 @@ namespace Othello_graphique
                 for (int j = 0; j < 8; j++)
                 {
                     //Met à jour les cases
-                    listTiles[i, j].Pion = engine.board.GetSquare(j, i);
+                    //listTiles[i, j].Pion = engine.board.GetSquare(j, i);
                     //Change le background des cases jouables
                     listTiles[i, j].changeBackground(engine.isPlayable(j, i, turn));
                 }
@@ -101,8 +102,9 @@ namespace Othello_graphique
                 {
                     Binding BindingBoard = new Binding();
                     BindingBoard.Path = new PropertyPath("Board" + i + j);
-                    BindingBoard.Mode = BindingMode.TwoWay;
+                    BindingBoard.Mode = BindingMode.OneWay;
                     BindingBoard.Source = engine.board[i,j];
+                    //listTiles[i,j].PropertyChanged += new PropertyChangedEventHandler(Tile_PropertyChange);
                     listTiles[i, j].DataContext = engine.board[i, j];
                     listTiles[i, j].SetBinding(listTiles[i,j].Pion, BindingBoard);
                 }
@@ -152,6 +154,12 @@ namespace Othello_graphique
 
 
             //listTiles[i,j].AddHandler()
+        }
+
+        private void Tile_PropertyChange(object sender, PropertyChangedEventArgs e)
+        {
+            MessageBox.Show("méthode Tile_PropertyChange");
+            majBoard();
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)

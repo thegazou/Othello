@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 
 namespace Othello_logique
 {
@@ -12,13 +13,20 @@ namespace Othello_logique
         #region INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
         // Méthode d'aide pour lancer PropertyChanged
-        private void FirePropertyChanged(string name)
+        private void OnPropertyChanged(string name)
         {
-            if (this.PropertyChanged != null)
+            MessageBox.Show("OnPropertyChange Board");
+            
+            PropertyChangedEventHandler handler = PropertyChanged;
+            //MessageBox.Show(handler.ToString());
+            if (handler != null)
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+                MessageBox.Show("TEST OnPropertyChange Board");
+                handler(this, new PropertyChangedEventArgs(name));
+            
             }
         }
+
         #endregion
 
 
@@ -35,8 +43,8 @@ namespace Othello_logique
         //public field
         public int this[int idx1, int idx2]
         {
-            get { return board[idx1, idx2]; }
-            set { board[idx1, idx2] = value; FirePropertyChanged("Board"); }
+            get { /*MessageBox.Show(board[idx1, idx2].ToString()); */ return board[idx1, idx2];  }
+            set {  board[idx1, idx2] = value; MessageBox.Show("set " + idx1 +"  " + idx2+ "      " + this.ToString()); OnPropertyChanged("Othello_logique.Board["+idx1+","+idx2+"]"); }
         }
 
         /// <summary>
