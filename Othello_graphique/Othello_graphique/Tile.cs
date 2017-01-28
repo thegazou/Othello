@@ -21,13 +21,9 @@ namespace Othello_graphique
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            MessageBox.Show("OnPropertyChange" + this.pion.ToString());
-
-
             if (handler != null)
             {
-               
-               // MessageBox.Show(this.pion.ToString());
+                MessageBox.Show(PropertyChanged.ToString());
 
                 if (this.pion == 1)
                 {
@@ -37,8 +33,6 @@ namespace Othello_graphique
                     circle.Fill = Brushes.Black;
                     circle.Stroke = Brushes.Black;
                     Content = circle;
-                    this.Content = circle;
-                    MessageBox.Show("Test 1" + this.pion.ToString());
                 }
                 else if (this.pion == -1)
                 {
@@ -48,60 +42,24 @@ namespace Othello_graphique
                     circle.Fill = Brushes.White;
                     circle.Stroke = Brushes.White;
                     Content = circle;
-                    this.Content = circle;
-                    MessageBox.Show("Test 2"  + this.pion.ToString());
                 }
                 else
                 {
                     Content = "";
-                    MessageBox.Show("Test 3" + this.pion.ToString());
                 }
 
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
 
-        private void FirePropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            MessageBox.Show("OnPropertyChange" + this.pion.ToString());
-
-            if (handler != null)
-            {
-                if (this.pion == 1)
-                {
-                    Ellipse circle = new Ellipse();
-                    circle.Width = this.ActualWidth * 0.9;
-                    circle.Height = this.ActualHeight * 0.9;
-                    circle.Fill = Brushes.Black;
-                    circle.Stroke = Brushes.Black;
-                    Content = circle;
-                    MessageBox.Show(this.pion.ToString());
-                }
-                else if (this.pion == -1)
-                {
-                    Ellipse circle = new Ellipse();
-                    circle.Width = this.ActualWidth * 0.9;
-                    circle.Height = this.ActualHeight * 0.9;
-                    circle.Fill = Brushes.White;
-                    circle.Stroke = Brushes.White;
-                    Content = circle;
-                    MessageBox.Show(this.pion.ToString());
-                }
-                else
-                {
-                    Content = "";
-                    MessageBox.Show(this.pion.ToString());
-                }
-
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
         #endregion
 
         private MainWindow parent;
         private int pion;
 
+        /// <summary>
+        /// Get the actual value of the tile
+        /// </summary>
         public int Pion
         {
             get { return pion; }
@@ -117,7 +75,9 @@ namespace Othello_graphique
                         circle.Height = this.ActualHeight * 0.9;
                         circle.Fill = Brushes.Black;
                         circle.Stroke = Brushes.Black;
-                        Content = circle;
+                        Content = pion;
+                        //Content = circle;
+                        //MessageBox.Show("Test1");
                     }
                     else if (pion == -1)
                     {
@@ -126,32 +86,48 @@ namespace Othello_graphique
                         circle.Height = this.ActualHeight * 0.9;
                         circle.Fill = Brushes.White;
                         circle.Stroke = Brushes.White;
-                        Content = circle;
+                        Content = pion;
+                        //Content = circle;
+                        //MessageBox.Show("Test -1");
                     }
                     else
                     {
+                        //Content = pion;
                         Content = "";
                     }
 
-                    this.OnPropertyChanged("Board" + row + col);
-                    MessageBox.Show("Pion");
+                    OnPropertyChanged("Pion");
                 }
                 
             }
         }
 
         private int row;
+
+        /// <summary>
+        /// Get the row of the tile
+        /// </summary>
         public int Row
         {
             get { return row; }
         }
 
         private int col;
+        /// <summary>
+        /// Get the column of the tile
+        /// </summary>
         public int Col
         {
             get { return col; }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="parent">get the main window</param>
+        /// <param name="row">get the row of the tile 0 to 7</param>
+        /// <param name="col">get the column of the tile 0 to 7</param>
+        /// <returns></returns>
         public Tile(MainWindow parent, int row, int col)
         {
             this.parent = parent;
@@ -161,6 +137,11 @@ namespace Othello_graphique
             this.Click += parent.Tile_Click;
         }
 
+        /// <summary>
+        /// Will change the background color if the tile is playable
+        /// </summary>
+        /// <param name="isPlayable">true if the tile is playable, false if it is not playable</param>
+        /// <returns></returns>
         public void changeBackground(bool isPlayable)
         {
             if (isPlayable)
@@ -173,12 +154,13 @@ namespace Othello_graphique
             }
         }
 
-        
 
+        /// <summary>
+        /// Set the binding.
+        /// </summary>
         internal void SetBinding(int pion, Binding bindingBoard)
         {
            this.Pion = (int)bindingBoard.Source;
-            pion = (int)bindingBoard.Source;
         }
 
     }

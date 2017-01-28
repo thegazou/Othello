@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using Othello_graphique;
 
 namespace Othello_logique
 {
@@ -12,18 +13,16 @@ namespace Othello_logique
 
         #region INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
-        // Méthode d'aide pour lancer PropertyChanged
+        /// <summary>
+        /// Method when a property is changed
+        /// </summary>
         private void OnPropertyChanged(string name)
         {
-            MessageBox.Show("OnPropertyChange Board");
-            
             PropertyChangedEventHandler handler = PropertyChanged;
-            //MessageBox.Show(handler.ToString());
             if (handler != null)
             {
-                MessageBox.Show("TEST OnPropertyChange Board");
                 handler(this, new PropertyChangedEventArgs(name));
-            
+
             }
         }
 
@@ -43,8 +42,8 @@ namespace Othello_logique
         //public field
         public int this[int idx1, int idx2]
         {
-            get { /*MessageBox.Show(board[idx1, idx2].ToString()); */ return board[idx1, idx2];  }
-            set {  board[idx1, idx2] = value; MessageBox.Show("set " + idx1 +"  " + idx2+ "      " + this.ToString()); OnPropertyChanged("Othello_logique.Board["+idx1+","+idx2+"]"); }
+            get { /*MessageBox.Show(board[idx1, idx2].ToString()); */ return board[idx1, idx2]; }
+            set { board[idx1, idx2] = value; ((MainWindow)Application.Current.MainWindow).UpdateTile(idx1, idx2, value); OnPropertyChanged("Pion"); }
         }
 
         /// <summary>

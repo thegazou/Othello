@@ -15,7 +15,10 @@ namespace Othello_logique
 
         #region INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
-        // Méthode d'aide pour lancer PropertyChanged
+
+        /// <summary>
+        /// Method when a property is changed
+        /// </summary>
         private void FirePropertyChanged(string name)
         {
             if (this.PropertyChanged != null)
@@ -93,13 +96,18 @@ namespace Othello_logique
             private set { currentPlayer = value; FirePropertyChanged("CurrentPlayer"); }
         }
 
-
+        /// <summary>
+        /// Get the white score.
+        /// </summary>
         public int WhiteScore
         {
             get { return whiteScore; }
             private set { whiteScore = value; FirePropertyChanged("WhiteScore"); }
         }
 
+        /// <summary>
+        /// Get the black score.
+        /// </summary>
         public int BlackScore
         {
             get { return blackScore; }

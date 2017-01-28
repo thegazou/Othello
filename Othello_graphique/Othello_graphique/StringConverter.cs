@@ -10,6 +10,9 @@ namespace Othello_graphique
 {
     class StringConverter : IValueConverter
     {
+        /// <summary>
+        /// Will Convert a value to a special string
+        /// </summary>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value != null)

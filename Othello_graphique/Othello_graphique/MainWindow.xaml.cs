@@ -25,6 +25,9 @@ namespace Othello_graphique
         private Tile[,] listTiles = new Tile[8, 8];
         private Engine engine = new Engine();
         private Boolean isPaused = false;
+
+        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -33,6 +36,11 @@ namespace Othello_graphique
             InitializeBinding();
         }
 
+        /// <summary>
+        /// Append when the player click on the Tile.
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         public void Tile_Click(object sender, RoutedEventArgs e)
         {
             Tile tile = (Tile)sender;
@@ -40,9 +48,8 @@ namespace Othello_graphique
             {
                 if (engine.isPlayable(tile.Col, tile.Row, engine.CurrentPlayer) && !isPaused)
                 {
+                    tile.Pion = engine.CurrentPlayer;
                     engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
-                    //lblScoreBlack.Content = engine.getWhiteScore().ToString();
-                    //lblScoreWhite.Content = engine.getBlackScore().ToString();
                     majBoard();
                 }
                 
@@ -53,6 +60,45 @@ namespace Othello_graphique
             }
         }
 
+        /// <summary>
+        /// Will update the tile value
+        /// </summary>
+        /// <param name="x">value between 0 and 7</param>
+        /// <param name="y">value between 0 and 7</param>
+        /// <param name="value">1 for white, -1 for black</param>
+        /// <returns></returns>
+        public void UpdateTile(int x, int y, int value)
+        {
+            try
+            {
+                listTiles[y, x].Pion = value;
+                bool turn;
+                if (engine.CurrentPlayer == 1)
+                {
+                    turn = false;
+                }
+                else
+                {
+                    turn = true;
+                }
+                for (int i = 0; i < 8; i++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        //Met à jour les cases voisines
+                        listTiles[i, j].changeBackground(engine.isPlayable(j, i, turn));
+                    }
+                }
+            }
+            catch { }
+            
+        }
+
+        /// <summary>
+        /// Initialize a new list of Tile
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void initializeBoard()
         {
             for (int i = 0; i < 8; i++)
@@ -69,6 +115,11 @@ namespace Othello_graphique
             majBoard();
         }
 
+        /// <summary>
+        /// Will Update the board
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void majBoard()
         {
             bool turn;
@@ -85,7 +136,7 @@ namespace Othello_graphique
                 for (int j = 0; j < 8; j++)
                 {
                     //Met à jour les cases
-                    //listTiles[i, j].Pion = engine.board.GetSquare(j, i);
+                    listTiles[i, j].Pion = engine.board.GetSquare(j, i);
                     //Change le background des cases jouables
                     listTiles[i, j].changeBackground(engine.isPlayable(j, i, turn));
                 }
@@ -93,6 +144,11 @@ namespace Othello_graphique
 
         }
 
+        /// <summary>
+        /// Initialize all the bindings
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void InitializeBinding()
         {
             //Binding Board
@@ -101,10 +157,9 @@ namespace Othello_graphique
                 for (int j = 0; j < 8; j++)
                 {
                     Binding BindingBoard = new Binding();
-                    BindingBoard.Path = new PropertyPath("Board" + i + j);
-                    BindingBoard.Mode = BindingMode.OneWay;
+                    BindingBoard.Path = new PropertyPath("Pion");
+                    BindingBoard.Mode = BindingMode.TwoWay;
                     BindingBoard.Source = engine.board[i,j];
-                    //listTiles[i,j].PropertyChanged += new PropertyChangedEventHandler(Tile_PropertyChange);
                     listTiles[i, j].DataContext = engine.board[i, j];
                     listTiles[i, j].SetBinding(listTiles[i,j].Pion, BindingBoard);
                 }
@@ -151,40 +206,49 @@ namespace Othello_graphique
             BindingBlackScore.Source = engine;
             lblScoreBlack.DataContext = engine;
             lblScoreBlack.SetBinding(TextBlock.TextProperty, BindingBlackScore);
-
-
-            //listTiles[i,j].AddHandler()
         }
 
-        private void Tile_PropertyChange(object sender, PropertyChangedEventArgs e)
-        {
-            MessageBox.Show("méthode Tile_PropertyChange");
-            majBoard();
-        }
-
+        /// <summary>
+        /// Will launch a new game
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
             isPaused = false;
             btnPause.Content = "Pause";
             engine.NewGame();
-            //majBoard();
+            majBoard();
         }
 
+        /// <summary>
+        /// Will save the game
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             engine.SaveGame();
         }
 
+        /// <summary>
+        /// Will load a game
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
             isPaused = false;
             btnPause.Content = "Pause";
             engine.LoadGame();
-            //majBoard();
-            //lblScoreBlack.Content = engine.getWhiteScore().ToString();
-            //lblScoreWhite.Content = engine.getBlackScore().ToString();
+            majBoard();
         }
 
+        /// <summary>
+        /// Will pause a new game
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
             if (!isPaused)
@@ -202,12 +266,22 @@ namespace Othello_graphique
             
         }
 
+        /// <summary>
+        /// Will go back
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void btnUndo_Click(object sender, RoutedEventArgs e)
         {
             engine.Undo();
-            //majBoard();
+            majBoard();
         }
 
+        /// <summary>
+        /// Will launch a new online game
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
         private void btnOnline_Click(object sender, RoutedEventArgs e)
         {
             try
