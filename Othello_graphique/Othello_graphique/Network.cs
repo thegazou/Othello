@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Author: Nicolas Gonin
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
@@ -17,14 +18,14 @@ namespace Othello_logique
         public static int[] GetInput(int myPort = 8001, string myIp = "0")
         {
             IPAddress serverIp;
-            if (myIp.Equals("0")== true)
+            if (myIp.Equals("0") == true)
                 serverIp = System.Net.IPAddress.Parse(GetLocalIPAddress());
             else
                 serverIp = System.Net.IPAddress.Parse(myIp);
             TcpListener server = new TcpListener(serverIp, 8001);
             server.Start();
             //Console.WriteLine("The local End point is  :" + server.LocalEndpoint);
-            Console.WriteLine("Waiting for a connection.....");
+            //Console.WriteLine("Waiting for a connection.....");
             TcpClient client = server.AcceptTcpClient();
             NetworkStream strm = client.GetStream();
             IFormatter formatter = new BinaryFormatter();
@@ -43,7 +44,7 @@ namespace Othello_logique
         /// <param name="y"></param>
         /// <param name="destIp"></param>
         /// <param name="destPort"></param>
-        public static void SendInput(int x, int y, string destIp= "169.254.84.22", int destPort=8001)
+        public static void SendInput(int x, int y, string destIp = "169.254.84.22", int destPort = 8001)
         {
             bool isConnected = false;
             TcpObject input = new TcpObject(x, y);
@@ -55,7 +56,7 @@ namespace Othello_logique
                     client.Connect(destIp, destPort);
                     isConnected = true;
                 }
-                catch (System.Net.Sockets.SocketException){ }
+                catch (System.Net.Sockets.SocketException) { }
             }
             IFormatter formatter = new BinaryFormatter();
             NetworkStream strm = client.GetStream();

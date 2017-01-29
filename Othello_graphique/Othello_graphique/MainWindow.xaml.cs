@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Othello_logique;
-using System.ComponentModel;
 
 namespace Othello_graphique
 {
@@ -24,7 +13,6 @@ namespace Othello_graphique
     {
         private Tile[,] listTiles = new Tile[8, 8];
         private Engine engine = new Engine();
-        private Boolean isPaused = false;
 
         public MainWindow()
         {
@@ -43,7 +31,7 @@ namespace Othello_graphique
             Tile tile = (Tile)sender;
             try
             {
-                if (engine.isPlayable(tile.Col, tile.Row, engine.CurrentPlayer) && !isPaused)
+                if (engine.isPlayable(tile.Col, tile.Row, engine.CurrentPlayer) && !engine.IsOnPause)
                 {
                     engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
                     majBoard();
@@ -108,7 +96,6 @@ namespace Othello_graphique
                    
                 }
             }
-            //majBoard();
         }
 
         /// <summary>
@@ -144,8 +131,6 @@ namespace Othello_graphique
             {
                 Console.WriteLine("Update Fail");
             }
-            
-
         }
 
         /// <summary>
@@ -197,6 +182,15 @@ namespace Othello_graphique
             BindingBlackScore.Source = engine;
             lblScoreBlack.DataContext = engine;
             lblScoreBlack.SetBinding(TextBlock.TextProperty, BindingBlackScore);
+
+            Binding BindingPause = new Binding();
+            BindingPause.Path = new PropertyPath("IsOnPause");
+            BindingPause.Mode = BindingMode.OneWay;
+            BindingPause.Converter = new StringConverter();
+            BindingPause.Source = engine;
+            btnPause.DataContext = engine;
+            btnPause.SetBinding(Button.ContentProperty, BindingPause);
+
         }
 
         /// <summary>
@@ -206,8 +200,10 @@ namespace Othello_graphique
         /// <returns></returns>
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
-            isPaused = false;
-            btnPause.Content = "Pause";
+            if(engine.IsOnPause)
+            {
+                engine.ResumeGame();
+            }
             engine.NewGame();
             majBoard();
         }
@@ -232,8 +228,6 @@ namespace Othello_graphique
 
             //If there is no game initialized we initialized one before. (usefull when the first thing the user do is to load a game).
             engine.NewGame();
-            isPaused = true;
-            btnPause.Content = "Resume";
             engine.LoadGame();
             majBoard();
                 
@@ -246,19 +240,17 @@ namespace Othello_graphique
         /// <returns></returns>
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
-            if (!isPaused)
-            {
-                btnPause.Content = "Resume";
-                engine.PauseGame();
-                isPaused = true;
+            if(engine.board != null)
+            { 
+                if (!engine.IsOnPause)
+                {
+                    engine.PauseGame();
+                }
+                else
+                {
+                    engine.ResumeGame();
+                }
             }
-            else
-            {
-                btnPause.Content = "Pause";
-                engine.ResumeGame();
-                isPaused = false;
-            }
-            
         }
 
         /// <summary>

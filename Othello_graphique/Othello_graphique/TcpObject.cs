@@ -1,8 +1,5 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿// Author: Nicolas Gonin
+using System;
 
 namespace Othello_logique
 {

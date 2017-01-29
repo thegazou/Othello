@@ -30,7 +30,6 @@ namespace Othello_logique
         }
         #endregion
 
-
         //public constants
         public const int BLACK = 1;
         public const int WHITE = -1;
@@ -43,26 +42,17 @@ namespace Othello_logique
         //private fields
         private delegate Tuple<int, int> GetNextMove(int[,] game, int player);
         private GetNextMove[] strategies = { IA.Strategie1, IA.Strategie2 };
-        private int currentPlayer;
-        private Stopwatch blackTimer = new Stopwatch();
-        private Stopwatch whiteTimer = new Stopwatch();
         private Stack<int[,]> boardHistory = new Stack<int[,]>();
         private Stack<int> playerHistory = new Stack<int>();
         private Decimal blackOffsetTime = 0;//Used if a game is loaded from a save.
-        private Decimal whiteOffsetTime = 0;//Used if a game is loaded from a save.
-        private bool isSavingInProgress = false;
+        private Decimal whiteOffsetTime = 0;//Used if a game is loaded from a save.     
         private bool isOnline = false;
         private string opponentIp;
         private int opponengPort;
-        private bool isOpponentTurn;
-        private int whiteScore;
-        private int blackScore;
-        private int startingPlayer;
         private System.Windows.Threading.DispatcherTimer dt = new System.Windows.Threading.DispatcherTimer();
         private BackgroundWorker listeningWorker;
 
-        //properties
-
+        private bool isOpponentTurn;
         /// <summary>
         /// Tells if it's the opponnent's turn.
         /// </summary>
@@ -72,15 +62,17 @@ namespace Othello_logique
             private set { isOpponentTurn = value; }
         }
 
+        private bool isOnPause = false;
         /// <summary>
         /// Tells if the game is on pause.
         /// </summary>
         public bool IsOnPause
         {
-            get { return IsOnPause; }
-            private set { IsOnPause = value; }
+            get { return isOnPause; }
+            private set { isOnPause = value; FirePropertyChanged("IsOnPause"); }
         }
 
+        private int startingPlayer;
         /// <summary>
         /// Get starting color of the player. Useful when playing online.
         /// </summary>
@@ -90,6 +82,7 @@ namespace Othello_logique
             private set { startingPlayer = value; }
         }
 
+        private int currentPlayer;
         /// <summary>
         /// Get the color of the current player.
         /// </summary>
@@ -99,6 +92,7 @@ namespace Othello_logique
             private set { currentPlayer = value; FirePropertyChanged("CurrentPlayer"); }
         }
 
+        private int whiteScore;
         /// <summary>
         /// Get the white score.
         /// </summary>
@@ -108,6 +102,7 @@ namespace Othello_logique
             private set { whiteScore = value; FirePropertyChanged("WhiteScore"); }
         }
 
+        private int blackScore;
         /// <summary>
         /// Get the black score.
         /// </summary>
@@ -117,6 +112,7 @@ namespace Othello_logique
             private set { blackScore = value; FirePropertyChanged("BlackScore"); }
         }
 
+        private Stopwatch blackTimer = new Stopwatch();
         /// <summary>
         /// Get the playing time of the black player in second rounded to one decimal.
         /// </summary>
@@ -127,6 +123,7 @@ namespace Othello_logique
 
         }
 
+        private Stopwatch whiteTimer = new Stopwatch();
         /// <summary>
         /// Get the playing time of the white player in second rounded to one decimal.
         /// </summary>
@@ -136,6 +133,7 @@ namespace Othello_logique
             private set { FirePropertyChanged("WhiteTimer"); }
         }
 
+        private bool isSavingInProgress = false;
         /// <summary>
         /// Tells if the game is being saved in an XML file.
         /// </summary>
@@ -151,7 +149,7 @@ namespace Othello_logique
         public void NewGame(int player = BLACK)
         {
             this.Player = player;
-            CurrentPlayer = Player;
+            this.CurrentPlayer = player;
             board = Board.StartingBoard();
             dt.Tick += new EventHandler(dt_Tick);
             dt.Interval = new TimeSpan(0, 0, 0, 0, 100);
@@ -163,10 +161,12 @@ namespace Othello_logique
             BlackScore = board.GetBlackScore();
 
             // Happends if starting online game as second player
+
             if (Player == WHITE)
             {
-                CurrentPlayer = -Player;
+
                 IsOpponentTurn = true;
+
                 ((MainWindow)Application.Current.MainWindow).majBoard();
                 listeningWorker.RunWorkerAsync();
             }
@@ -190,33 +190,11 @@ namespace Othello_logique
         }
 
         /// <summary>
-        /// Listen for the opponnent move.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            int[] move = Network.GetInput();
-            e.Result = new Tuple<int, int>(move[0],move[1]);
-        }
-
-        /// <summary>
-        /// play the opponnent's move.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            Tuple<int, int> result = (Tuple<int, int>)e.Result;
-            playMove(result.Item1,result.Item2, CurrentPlayer);
-            Console.WriteLine("{2}:opponnent played ({0},{1})", result.Item1, result.Item2,this.Player);
-        }
-
-        /// <summary>
         /// Stop the stopwatch of the current player.
         /// </summary>
         public void PauseGame()
         {
+            IsOnPause = true;
             if (CurrentPlayer == WHITE)
                 whiteTimer.Stop();
             else
@@ -229,6 +207,7 @@ namespace Othello_logique
         /// </summary>
         public void ResumeGame()
         {
+            IsOnPause = false;
             dt.Start();
             if (CurrentPlayer == WHITE)
                 whiteTimer.Start();
@@ -308,7 +287,7 @@ namespace Othello_logique
             foreach (int[] source in sourceEngine.BoardHistory.Reverse())
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
             WhiteScore = board.GetWhiteScore();
-            BlackScore = board.GetBlackScore();
+
         }
 
         /// <summary>
@@ -321,7 +300,7 @@ namespace Othello_logique
         {
             Tuple<int, int> index = new Tuple<int, int>(column, line);
             SaveState();
-            board.PlayMove(index, player); 
+            board.PlayMove(index, player);
             WhiteScore = getWhiteScore();
             BlackScore = getBlackScore();
             if (isOnline && IsOpponentTurn == false)
@@ -439,7 +418,10 @@ namespace Othello_logique
         private void nextTurn()
         {
             if (board.GameOver() == true)
+            {
                 CurrentPlayer = EMPTY;
+                EndScreen();
+            }
             else
             {
                 if (CurrentPlayer == BLACK)
@@ -457,9 +439,8 @@ namespace Othello_logique
                 if (board.CanPlay(CurrentPlayer) == false)
                 {
                     nextTurn();
-                    throw new Exception("CANNOT PLAY");
                 }
-                    
+
                 if (isOnline && IsOpponentTurn)
                 {
                     listeningWorker.RunWorkerAsync();
@@ -619,6 +600,63 @@ namespace Othello_logique
         {
             BlackTimer = 0;
             WhiteTimer = 0;
+        }
+
+        /// <summary>
+        /// Listen for the opponnent move.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int[] move = Network.GetInput();
+            e.Result = new Tuple<int, int>(move[0], move[1]);
+        }
+
+        /// <summary>
+        /// play the opponnent's move.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Tuple<int, int> result = (Tuple<int, int>)e.Result;
+            playMove(result.Item1, result.Item2, CurrentPlayer);
+        }
+
+
+        /// <summary>
+        /// Display the winner and his score on an information box.
+        /// Ask if the user if he wants to continue playing.
+        /// </summary>
+        private void EndScreen()
+        {
+            string message;
+            if (BlackScore == WhiteScore)
+            {
+                message = "It's a draw! \n Do you want to play again?";
+            }
+            else
+            {
+                string winner;
+                int winnerScore;
+                if (BlackScore > WhiteScore)
+                {
+                    winner = "black";
+                    winnerScore = BlackScore;
+                }
+                else
+                {
+                    winner = "white";
+                    winnerScore = WhiteScore;
+                }
+                message = String.Format("The {0} player wins with {1} points!\n Do you want to play again?", winner, winnerScore);
+            }
+
+            if (MessageBox.Show(message, "My Application", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            {
+                Application.Current.Shutdown();
+            }
         }
     }
 }

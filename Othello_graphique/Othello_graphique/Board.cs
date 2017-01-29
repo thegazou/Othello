@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
-using Othello_graphique;
 
 namespace Othello_logique
 {
@@ -28,7 +26,6 @@ namespace Othello_logique
 
         #endregion
 
-
         //public constants
         public const int BOARD_SIZE = 8;
         public const int BLACK = 1;
@@ -36,16 +33,11 @@ namespace Othello_logique
         public const int EMPTY = 0;
         public const int INVALID = -2;
 
-        //private field
         private int[,] board = new int[BOARD_SIZE, BOARD_SIZE];
-
-        //public field
         public int this[int idx1, int idx2]
         {
-            get {  return board[idx1, idx2]; }
-            set { board[idx1, idx2] = value;
-                //((MainWindow)Application.Current.MainWindow).majBoard();
-                OnPropertyChanged("Pion"); }
+            get { return board[idx1, idx2]; }
+            set { board[idx1, idx2] = value; OnPropertyChanged("Pion"); }
         }
 
         /// <summary>
@@ -208,7 +200,7 @@ namespace Othello_logique
             startingBoard[3, 4] = BLACK;
             startingBoard[4, 3] = BLACK;
             startingBoard[4, 4] = WHITE;
-            
+
             return startingBoard;
         }
 
@@ -219,7 +211,7 @@ namespace Othello_logique
         public void SetBoard(int[,] SourceBoard)
         {
             foreach (Tuple<int, int> index in GetSquareIndices())
-                SetSquare(index,SourceBoard[index.Item1, index.Item2], false);
+                SetSquare(index, SourceBoard[index.Item1, index.Item2], false);
         }
 
         /*############################################################################
@@ -259,7 +251,7 @@ namespace Othello_logique
         /// <param name="player">Value of the player</param>
         /// <param name="checkForLegality">Set to false if you don't want to check for legality of the move.</param>
         /// <returns></returns>
-        public bool SetSquare(Tuple<int, int> index, int player, bool checkForLegality=true)
+        public bool SetSquare(Tuple<int, int> index, int player, bool checkForLegality = true)
         {
             if (IsSquareValid(index) || checkForLegality && CanMove(index, player))
             {
