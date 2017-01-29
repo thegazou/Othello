@@ -24,7 +24,6 @@ namespace Othello_graphique
     {
         private Tile[,] listTiles = new Tile[8, 8];
         private Engine engine = new Engine();
-        //private Boolean isPaused = false;
 
         
 
@@ -220,7 +219,6 @@ namespace Othello_graphique
             {
                 engine.ResumeGame();
             }
-            //btnPause.Content = "Pause";
             engine.NewGame();
             majBoard();
         }
