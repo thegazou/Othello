@@ -42,8 +42,8 @@ namespace Othello_logique
         //public field
         public int this[int idx1, int idx2]
         {
-            get { /*MessageBox.Show(board[idx1, idx2].ToString()); */ return board[idx1, idx2]; }
-            set { board[idx1, idx2] = value; ((MainWindow)Application.Current.MainWindow).UpdateTile(idx1, idx2, value); OnPropertyChanged("Pion"); }
+            get {  return board[idx1, idx2]; }
+            set { board[idx1, idx2] = value; ((MainWindow)Application.Current.MainWindow).majBoard(); OnPropertyChanged("Pion"); }
         }
 
         /// <summary>

@@ -75,9 +75,7 @@ namespace Othello_graphique
                         circle.Height = this.ActualHeight * 0.9;
                         circle.Fill = Brushes.Black;
                         circle.Stroke = Brushes.Black;
-                        Content = pion;
-                        //Content = circle;
-                        //MessageBox.Show("Test1");
+                        Content = circle;
                     }
                     else if (pion == -1)
                     {
@@ -86,13 +84,10 @@ namespace Othello_graphique
                         circle.Height = this.ActualHeight * 0.9;
                         circle.Fill = Brushes.White;
                         circle.Stroke = Brushes.White;
-                        Content = pion;
-                        //Content = circle;
-                        //MessageBox.Show("Test -1");
+                        Content = circle;
                     }
                     else
                     {
-                        //Content = pion;
                         Content = "";
                     }
 
