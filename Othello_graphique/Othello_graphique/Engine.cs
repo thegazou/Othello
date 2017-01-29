@@ -7,6 +7,8 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Threading;
 using System.ComponentModel;
+using System.Windows;
+using Othello_graphique;
 
 namespace Othello_logique
 {
@@ -57,6 +59,7 @@ namespace Othello_logique
         private int blackScore;
         private int startingPlayer;
         private System.Windows.Threading.DispatcherTimer dt = new System.Windows.Threading.DispatcherTimer();
+        private BackgroundWorker listeningWorker;
 
         //properties
 
@@ -148,7 +151,7 @@ namespace Othello_logique
         public void NewGame(int player = BLACK)
         {
             this.Player = player;
-            CurrentPlayer = player;
+            CurrentPlayer = Player;
             board = Board.StartingBoard();
             dt.Tick += new EventHandler(dt_Tick);
             dt.Interval = new TimeSpan(0, 0, 0, 0, 100);
@@ -160,12 +163,12 @@ namespace Othello_logique
             BlackScore = board.GetBlackScore();
 
             // Happends if starting online game as second player
-            if (player == WHITE)
+            if (Player == WHITE)
             {
-                CurrentPlayer = -player;
+                CurrentPlayer = -Player;
                 IsOpponentTurn = true;
-                int[] move = Network.GetInput();
-                playMove(move[0], move[1], CurrentPlayer);
+                ((MainWindow)Application.Current.MainWindow).majBoard();
+                listeningWorker.RunWorkerAsync();
             }
         }
 
@@ -177,12 +180,36 @@ namespace Othello_logique
         /// <param name="player"></param>
         public void NewOnlineGame(string opponentIp, int opponentPort, int player)
         {
+            listeningWorker = new BackgroundWorker();
+            listeningWorker.DoWork += new DoWorkEventHandler(bw_DoWork);
+            listeningWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
             isOnline = true;
             this.opponentIp = opponentIp;
             this.opponengPort = opponentPort;
             NewGame(player);
-            WhiteScore = board.GetWhiteScore();
-            BlackScore = board.GetBlackScore();
+        }
+
+        /// <summary>
+        /// Listen for the opponnent move.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int[] move = Network.GetInput();
+            e.Result = new Tuple<int, int>(move[0],move[1]);
+        }
+
+        /// <summary>
+        /// play the opponnent's move.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Tuple<int, int> result = (Tuple<int, int>)e.Result;
+            playMove(result.Item1,result.Item2, CurrentPlayer);
+            Console.WriteLine("{2}:opponnent played ({0},{1})", result.Item1, result.Item2,this.Player);
         }
 
         /// <summary>
@@ -281,7 +308,7 @@ namespace Othello_logique
             foreach (int[] source in sourceEngine.BoardHistory.Reverse())
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
             WhiteScore = board.GetWhiteScore();
-            BlackScore = board.GetBlackScore();    
+            BlackScore = board.GetBlackScore();
         }
 
         /// <summary>
@@ -294,9 +321,14 @@ namespace Othello_logique
         {
             Tuple<int, int> index = new Tuple<int, int>(column, line);
             SaveState();
-            board.PlayMove(index, player);
+            board.PlayMove(index, player); 
+            WhiteScore = getWhiteScore();
+            BlackScore = getBlackScore();
             if (isOnline && IsOpponentTurn == false)
+            {
                 Network.SendInput(column, line, opponentIp, opponengPort);
+                Thread.Sleep(3000);
+            }
             nextTurn();
         }
 
@@ -423,15 +455,17 @@ namespace Othello_logique
                 CurrentPlayer = -CurrentPlayer;
                 IsOpponentTurn = !IsOpponentTurn;
                 if (board.CanPlay(CurrentPlayer) == false)
+                {
                     nextTurn();
+                    throw new Exception("CANNOT PLAY");
+                }
+                    
                 if (isOnline && IsOpponentTurn)
                 {
-                    int[] move = Network.GetInput();
-                    playMove(move[0], move[1], CurrentPlayer);
+                    listeningWorker.RunWorkerAsync();
                 }
             }
-            WhiteScore = getWhiteScore();
-            BlackScore = getBlackScore();
+
         }
 
         /// <summary>

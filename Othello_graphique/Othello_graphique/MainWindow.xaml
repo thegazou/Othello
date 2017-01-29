@@ -67,9 +67,9 @@
 
         <Label x:Name="label" Content="White" Grid.Column="1" HorizontalAlignment="Left" Margin="106,62.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="27" Width="41"/>
         <Label x:Name="label_Copy" Content="Black" Grid.Column="1" Margin="106,222.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="27" HorizontalAlignment="Left" Width="37"/>
-        <Button x:Name="btnOnline" Content="Online" HorizontalAlignment="Left" Margin="151,10,0,0" VerticalAlignment="Top" Width="80"/>
-        <TextBox x:Name="tbxIp" HorizontalAlignment="Left" Height="26" Margin="321,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Tag=""/>
-        <TextBox x:Name="tbxPort" HorizontalAlignment="Left" Height="28" Margin="321,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Tag=""/>
+        <Button x:Name="btnOnline" Content="Online" HorizontalAlignment="Left" Margin="151,10,0,0" VerticalAlignment="Top" Width="80" Click="btnOnline_Click"/>
+        <TextBox x:Name="tbxIp" Text="169.254.84.22" HorizontalAlignment="Left" Height="26" Margin="321,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Tag=""/>
+        <TextBox x:Name="tbxPort" Text="8001" HorizontalAlignment="Left" Height="28" Margin="321,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Tag=""/>
         <Label x:Name="label1" Content="IP" HorizontalAlignment="Left" Margin="284,5,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label2" Content="Port" HorizontalAlignment="Left" Margin="284,37,0,0" VerticalAlignment="Top"/>
         <RadioButton x:Name="rbtnBlack" Content="Black" HorizontalAlignment="Left" Margin="320,73,0,0" VerticalAlignment="Top" IsChecked="True"/>

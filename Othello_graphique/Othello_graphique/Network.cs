@@ -24,7 +24,7 @@ namespace Othello_logique
             TcpListener server = new TcpListener(serverIp, 8001);
             server.Start();
             //Console.WriteLine("The local End point is  :" + server.LocalEndpoint);
-            //Console.WriteLine("Waiting for a connection.....");
+            Console.WriteLine("Waiting for a connection.....");
             TcpClient client = server.AcceptTcpClient();
             NetworkStream strm = client.GetStream();
             IFormatter formatter = new BinaryFormatter();
@@ -43,7 +43,7 @@ namespace Othello_logique
         /// <param name="y"></param>
         /// <param name="destIp"></param>
         /// <param name="destPort"></param>
-        public static void SendInput(int x, int y, string destIp, int destPort=8001)
+        public static void SendInput(int x, int y, string destIp= "169.254.84.22", int destPort=8001)
         {
             bool isConnected = false;
             TcpObject input = new TcpObject(x, y);

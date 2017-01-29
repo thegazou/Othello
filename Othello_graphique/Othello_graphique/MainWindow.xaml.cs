@@ -26,15 +26,13 @@ namespace Othello_graphique
         private Engine engine = new Engine();
         private Boolean isPaused = false;
 
-        
-
         public MainWindow()
         {
             InitializeComponent();
             initializeBoard();
             InitializeBinding();
         }
-
+         
         /// <summary>
         /// Append when the player click on the Tile.
         /// </summary>
@@ -300,7 +298,7 @@ namespace Othello_graphique
             {
                 Console.WriteLine("Fail to start Online Mode");
             }
-            majBoard();
+            majBoard();     
         }
     }
 }
