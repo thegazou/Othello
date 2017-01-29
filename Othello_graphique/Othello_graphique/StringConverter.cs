@@ -17,6 +17,21 @@ namespace Othello_graphique
         {
             if (value != null)
             {
+
+                if (value is bool)
+                {
+                    if ((bool)value)
+                    {
+                        return "Resume";
+                    }
+                    else
+                    {
+                        return "Pause";
+                    }
+
+                }
+
+
                 int number = (int)value;
 
                 string TexteTest = number.ToString();
@@ -34,7 +49,6 @@ namespace Othello_graphique
                         break;
                 }
                 return TexteSortie;
-
             }
             return string.Empty;
         }

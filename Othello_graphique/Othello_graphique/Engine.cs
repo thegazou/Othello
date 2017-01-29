@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using System.IO;
 using System.Threading;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Othello_logique
 {
@@ -50,6 +51,7 @@ namespace Othello_logique
         private Decimal whiteOffsetTime = 0;//Used if a game is loaded from a save.
         private bool isSavingInProgress = false;
         private bool isOnline = false;
+        private Boolean isOnPause = true;
         private string opponentIp;
         private int opponengPort;
         private bool isOpponentTurn;
@@ -72,10 +74,10 @@ namespace Othello_logique
         /// <summary>
         /// Tells if the game is on pause.
         /// </summary>
-        public bool IsOnPause
+        public Boolean IsOnPause
         {
-            get { return IsOnPause; }
-            private set { IsOnPause = value; }
+            get { return isOnPause; }
+            private set { isOnPause = value; FirePropertyChanged("IsOnPause");}
         }
 
         /// <summary>
@@ -190,6 +192,7 @@ namespace Othello_logique
         /// </summary>
         public void PauseGame()
         {
+            IsOnPause = true;
             if (CurrentPlayer == WHITE)
                 whiteTimer.Stop();
             else
@@ -202,6 +205,7 @@ namespace Othello_logique
         /// </summary>
         public void ResumeGame()
         {
+            IsOnPause = false;
             dt.Start();
             if (CurrentPlayer == WHITE)
                 whiteTimer.Start();
