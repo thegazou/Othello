@@ -31,7 +31,6 @@ namespace Othello_graphique
         public MainWindow()
         {
             InitializeComponent();
-            engine.NewGame();
             initializeBoard();
             InitializeBinding();
         }
@@ -48,7 +47,6 @@ namespace Othello_graphique
             {
                 if (engine.isPlayable(tile.Col, tile.Row, engine.CurrentPlayer) && !isPaused)
                 {
-                    tile.Pion = engine.CurrentPlayer;
                     engine.playMove(tile.Col, tile.Row, engine.CurrentPlayer);
                     majBoard();
                 }
@@ -112,7 +110,7 @@ namespace Othello_graphique
                    
                 }
             }
-            majBoard();
+            //majBoard();
         }
 
         /// <summary>
@@ -120,27 +118,35 @@ namespace Othello_graphique
         /// </summary>
         /// <param></param>
         /// <returns></returns>
-        private void majBoard()
+        public void majBoard()
         {
-            bool turn;
-            if(engine.CurrentPlayer == 1)
+            try
             {
-                turn = false;
-            }
-            else
-            {
-                turn = true;
-            }
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
+                bool turn;
+                if (engine.CurrentPlayer == 1)
                 {
-                    //Met à jour les cases
-                    listTiles[i, j].Pion = engine.board.GetSquare(j, i);
-                    //Change le background des cases jouables
-                    listTiles[i, j].changeBackground(engine.isPlayable(j, i, turn));
+                    turn = false;
+                }
+                else
+                {
+                    turn = true;
+                }
+                for (int i = 0; i < 8; i++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        //Met à jour les cases
+                        listTiles[i, j].Pion = engine.board.GetSquare(j, i);
+                        //Change le background des cases jouables
+                        listTiles[i, j].changeBackground(engine.isPlayable(j, i, turn));
+                    }
                 }
             }
+            catch
+            {
+                Console.WriteLine("Update Fail");
+            }
+            
 
         }
 
@@ -151,19 +157,6 @@ namespace Othello_graphique
         /// <returns></returns>
         private void InitializeBinding()
         {
-            //Binding Board
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    Binding BindingBoard = new Binding();
-                    BindingBoard.Path = new PropertyPath("Pion");
-                    BindingBoard.Mode = BindingMode.TwoWay;
-                    BindingBoard.Source = engine.board[i,j];
-                    listTiles[i, j].DataContext = engine.board[i, j];
-                    listTiles[i, j].SetBinding(listTiles[i,j].Pion, BindingBoard);
-                }
-            }
 
            //Binding Turn
             Binding BindingTurn = new Binding();
@@ -238,10 +231,15 @@ namespace Othello_graphique
         /// <returns></returns>
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
-            isPaused = false;
-            btnPause.Content = "Pause";
+
+            //If there is no game initialized we initialized one before. (usefull when the first thing the user do is to load a game).
+            engine.NewGame();
+            isPaused = true;
+            btnPause.Content = "Resume";
             engine.LoadGame();
             majBoard();
+            engine.board.Print();
+                
         }
 
         /// <summary>
