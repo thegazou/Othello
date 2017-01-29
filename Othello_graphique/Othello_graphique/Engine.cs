@@ -264,23 +264,24 @@ namespace Othello_logique
         public void LoadGame(string fileName = "Save.xml")
         {
             while (IsSavingInProgress == true) ;
+            PauseGame();
             SavableEngine sourceEngine;
             Deserialize(fileName, out sourceEngine);
             this.whiteTimer.Reset();
             this.blackTimer.Reset();
             this.whiteOffsetTime = sourceEngine.WhiteTimer;
             this.blackOffsetTime = sourceEngine.BlackTimer;
+            this.BlackTimer = blackOffsetTime;
+            this.WhiteTimer = whiteOffsetTime;
             this.CurrentPlayer = sourceEngine.Player;
             this.Player = sourceEngine.Player;
-
             this.board.SetBoard(Engine.Convert1DTo2DBoardArray(sourceEngine.Board));
-            this.playerHistory = new Stack<int>(sourceEngine.PlayerHistory);
-
-            foreach (int[] source in sourceEngine.BoardHistory)
+            this.board.Print();
+            this.playerHistory = new Stack<int>(sourceEngine.PlayerHistory.Reverse());
+            foreach (int[] source in sourceEngine.BoardHistory.Reverse())
                 this.boardHistory.Push(Engine.Convert1DTo2DBoardArray(source));
             WhiteScore = board.GetWhiteScore();
-            BlackScore = board.GetBlackScore();
-            PauseGame();
+            BlackScore = board.GetBlackScore();    
         }
 
         /// <summary>

@@ -43,7 +43,9 @@ namespace Othello_logique
         public int this[int idx1, int idx2]
         {
             get {  return board[idx1, idx2]; }
-            set { board[idx1, idx2] = value; ((MainWindow)Application.Current.MainWindow).majBoard(); OnPropertyChanged("Pion"); }
+            set { board[idx1, idx2] = value;
+                //((MainWindow)Application.Current.MainWindow).majBoard();
+                OnPropertyChanged("Pion"); }
         }
 
         /// <summary>
@@ -217,7 +219,7 @@ namespace Othello_logique
         public void SetBoard(int[,] SourceBoard)
         {
             foreach (Tuple<int, int> index in GetSquareIndices())
-                SetSquare(index,SourceBoard[index.Item1, index.Item2]);
+                SetSquare(index,SourceBoard[index.Item1, index.Item2], false);
         }
 
         /*############################################################################
@@ -237,6 +239,7 @@ namespace Othello_logique
             else
                 return INVALID;
         }
+
         /// <summary>
         /// Redefine funtion of the function GetSquare(Tuple<int, int> index)
         /// </summary>
@@ -250,14 +253,15 @@ namespace Othello_logique
 
         /// <summary>
         /// Set a specifique square with the given player value.
-        /// Return false if the move is not valid or not legal.
+        /// Return false if the move is not valid (or not legal).
         /// </summary>
         /// <param name="index">index of the square</param>
         /// <param name="player">Value of the player</param>
+        /// <param name="checkForLegality">Set to false if you don't want to check for legality of the move.</param>
         /// <returns></returns>
-        public bool SetSquare(Tuple<int, int> index, int player)
+        public bool SetSquare(Tuple<int, int> index, int player, bool checkForLegality=true)
         {
-            if (IsSquareValid(index) && CanMove(index, player))
+            if (IsSquareValid(index) || checkForLegality && CanMove(index, player))
             {
                 this[index.Item1, index.Item2] = player;
                 return true;
@@ -338,7 +342,7 @@ namespace Othello_logique
             {
                 for (int y = 0; y < BOARD_SIZE; y++)
                 {
-                    if (GetSquare(x, y) == value || GetSquare(x, y) == 2)
+                    if (GetSquare(x, y) == value || value == 2)
                     {
                         indices.Add(new Tuple<int, int>(x, y));
                     }
