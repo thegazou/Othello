@@ -14,7 +14,6 @@ namespace Othello_graphique
 {
     class Tile : Button, INotifyPropertyChanged
     {
-
         #region INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
 

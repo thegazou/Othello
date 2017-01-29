@@ -110,7 +110,6 @@ namespace Othello_graphique
                    
                 }
             }
-            //majBoard();
         }
 
         /// <summary>
@@ -238,7 +237,6 @@ namespace Othello_graphique
             btnPause.Content = "Resume";
             engine.LoadGame();
             majBoard();
-            engine.board.Print();
                 
         }
 
