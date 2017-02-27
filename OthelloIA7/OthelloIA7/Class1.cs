@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace OthelloIA7
 {
@@ -15,7 +14,7 @@ namespace OthelloIA7
         public const int WHITE = -1;
         public const int EMPTY = 0;
         public const int INVALID = -2;
-        public static TreeNode treeNode;
+        public static Node treeNode;
 
         public int[,] board = new int[BOARD_SIZE, BOARD_SIZE];
         public int this[int idx1, int idx2]
@@ -385,14 +384,14 @@ namespace OthelloIA7
 
         public void AlphaBeta(Board board)
         {
-            treeNode = new TreeNode();
+            treeNode = new Node();
             AlphaBeta(board, difficulty, playerColor, int.MinValue, int.MaxValue, treeNode);
         }
 
-        public int AlphaBeta(Board board, int depth, int currentPlayer, int alpha, int beta, TreeNode node)
+        public int AlphaBeta(Board board, int depth, int currentPlayer, int alpha, int beta, Node node)
         {
-            TreeNode thisNode = new TreeNode();
-            node.Nodes.Add(thisNode);
+            Node thisNode = new Node();
+            node.AddChild(thisNode);
 
             // If the game is over, terminate the search
             if (board.GameOver())
